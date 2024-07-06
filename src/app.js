@@ -204,6 +204,9 @@ function setupPostLinks() {
 async function fetchAndDisplayPost(path) {
     try {
         const response = await fetch(`https://raw.githubusercontent.com/osvalois/website/main/${path}`);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         const markdown = await response.text();
         const html = convertMarkdownToHtml(markdown);
         displayPost(html);
@@ -214,21 +217,16 @@ async function fetchAndDisplayPost(path) {
 }
 
 function convertMarkdownToHtml(markdown) {
-    // Este es un convertidor simple de Markdown a HTML
-    // Para una solución más robusta, considera usar una biblioteca como marked.js
-    return markdown
-        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
-        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
-        .replace(/\*(.*)\*/gim, '<em>$1</em>')
-        .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
-        .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
-        .replace(/\n$/gim, '<br />');
+    return marked.parse(markdown);
 }
 
 function displayPost(html) {
-    const postContentElement = document.getElementById('post-content');
+    let postContentElement = document.getElementById('post-content');
+    if (!postContentElement) {
+        postContentElement = document.createElement('div');
+        postContentElement.id = 'post-content';
+        document.querySelector('.main-container').appendChild(postContentElement);
+    }
     postContentElement.innerHTML = html;
     postContentElement.style.display = 'block';
 
