@@ -151,6 +151,7 @@ async function renderApp() {
 
     setupNavigation();
     setupContactForm();
+    setupPostLinks(); // Agregado para configurar los enlaces de los posts dinámicamente
 }
 
 function setupNavigation() {
@@ -180,14 +181,64 @@ function setupContactForm() {
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Here you would typically send the form data to a server
-            // For now, we'll just log it to the console
+            // Aquí típicamente enviarías los datos del formulario a un servidor
+            // Por ahora, los mostraremos en la consola
             const formData = new FormData(form);
-            console.log('Form submitted:', Object.fromEntries(formData));
-            alert('Thank you for your message! We will get back to you soon.');
+            console.log('Formulario enviado:', Object.fromEntries(formData));
+            alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
             form.reset();
         });
     }
+}
+
+function setupPostLinks() {
+    document.querySelectorAll('.post-link').forEach(link => {
+        link.addEventListener('click', async (e) => {
+            e.preventDefault();
+            const path = e.target.getAttribute('data-path');
+            await fetchAndDisplayPost(path);
+        });
+    });
+}
+
+async function fetchAndDisplayPost(path) {
+    try {
+        const response = await fetch(`https://raw.githubusercontent.com/osvalois/website/main/${path}`);
+        const markdown = await response.text();
+        const html = convertMarkdownToHtml(markdown);
+        displayPost(html);
+    } catch (error) {
+        console.error('Error al cargar el post:', error);
+        displayPost('<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>');
+    }
+}
+
+function convertMarkdownToHtml(markdown) {
+    // Este es un convertidor simple de Markdown a HTML
+    // Para una solución más robusta, considera usar una biblioteca como marked.js
+    return markdown
+        .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+        .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+        .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+        .replace(/\*\*(.*)\*\*/gim, '<strong>$1</strong>')
+        .replace(/\*(.*)\*/gim, '<em>$1</em>')
+        .replace(/!\[(.*?)\]\((.*?)\)/gim, "<img alt='$1' src='$2' />")
+        .replace(/\[(.*?)\]\((.*?)\)/gim, "<a href='$2'>$1</a>")
+        .replace(/\n$/gim, '<br />');
+}
+
+function displayPost(html) {
+    const postContentElement = document.getElementById('post-content');
+    postContentElement.innerHTML = html;
+    postContentElement.style.display = 'block';
+
+    // Ocultar otras secciones
+    document.querySelectorAll('.section').forEach(section => {
+        section.style.display = 'none';
+    });
+
+    // Desplazar hasta el contenido del post
+    postContentElement.scrollIntoView({ behavior: 'smooth' });
 }
 
 renderApp();
