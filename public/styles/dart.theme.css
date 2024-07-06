@@ -6,7 +6,7 @@
   --accent-color: #64ffda;
   --text-color: #ccd6f6;
   --background-color: #020c1b;
-  --card-background: #1d2d50;
+  --card-background: rgba(29, 45, 80, 0.8);
   --hover-color: #233554;
   --transition-speed: 0.3s;
 }
@@ -20,6 +20,7 @@
 body {
   font-family: 'Inter', 'Roboto', sans-serif;
   background-color: var(--background-color);
+  background-image: linear-gradient(to bottom right, #020c1b, #0a192f);
   color: var(--text-color);
   line-height: 1.6;
   font-size: 16px;
@@ -76,26 +77,35 @@ body {
   transition: all var(--transition-speed) ease;
   border-radius: 4px;
   position: relative;
+  overflow: hidden;
+}
+
+.navbar-link::before, .navbar-link::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: var(--accent-color);
+  left: -100%;
+  transition: all 0.3s ease;
+}
+
+.navbar-link::before {
+  top: 0;
 }
 
 .navbar-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background-color: var(--accent-color);
-  transition: width var(--transition-speed) ease;
+  bottom: 0;
+  transition-delay: 0.1s;
 }
 
-.navbar-link:hover::after {
-  width: 100%;
+.navbar-link:hover::before, .navbar-link:hover::after {
+  left: 0;
 }
 
 /* Improved Main Content Styles */
 .main-container {
-  padding-top: 4rem; /* Reduced from 6rem */
+  padding-top: 4rem;
   min-height: calc(100vh - 4rem);
 }
 
@@ -103,22 +113,24 @@ body {
   min-height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* Changed from center */
+  justify-content: flex-start;
   align-items: center;
   position: absolute;
-  top: 4rem; /* Reduced from 6rem */
+  top: 4rem;
   left: 0;
   right: 0;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease;
+  transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease, transform 0.5s ease;
   padding: 2rem 0;
+  transform: translateY(20px);
 }
 
 .section.active {
   opacity: 1;
   visibility: visible;
   position: relative;
+  transform: translateY(0);
 }
 
 h2 {
@@ -128,6 +140,7 @@ h2 {
   text-align: center;
   font-weight: 700;
   letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
 }
 
 h3 {
@@ -146,10 +159,11 @@ h3 {
   transition: all var(--transition-speed) ease;
   border: 1px solid rgba(100, 255, 218, 0.1);
   width: 100%;
+  backdrop-filter: blur(5px);
 }
 
 .card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.02);
   box-shadow: 0 20px 40px rgba(0,0,0,0.2);
   border-color: var(--accent-color);
 }
@@ -168,6 +182,12 @@ h3 {
   object-fit: cover;
   border: 3px solid var(--accent-color);
   box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+  transition: all 0.3s ease;
+}
+
+.profile-image:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 30px rgba(100, 255, 218, 0.5);
 }
 
 .profile-info p {
@@ -192,7 +212,7 @@ h3 {
 }
 
 .category-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-5px) scale(1.03);
   box-shadow: 0 10px 20px rgba(0,0,0,0.1);
   border-color: var(--accent-color);
 }
@@ -239,7 +259,7 @@ h3 {
   margin-bottom: 1.5rem;
   border: 1px solid var(--secondary-color);
   border-radius: 4px;
-  background-color: var(--primary-color);
+  background-color: rgba(10, 25, 47, 0.5);
   color: var(--text-color);
   font-family: 'Inter', 'Roboto', sans-serif;
   transition: all var(--transition-speed) ease;
@@ -263,15 +283,50 @@ h3 {
   border-radius: 4px;
   cursor: pointer;
   transition: all var(--transition-speed) ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .contact-form button:hover {
   background-color: rgba(100, 255, 218, 0.1);
 }
 
+.contact-form button::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: var(--accent-color);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+.contact-form button:focus:not(:active)::after {
+  animation: ripple 1s ease-out;
+}
+
 /* Improved Footer Styles */
 .footer {
-  background-color: var(--primary-color);
+  background-color: rgba(10, 25, 47, 0.95);
   color: var(--text-color);
   text-align: center;
   padding: 2.5rem 0;
@@ -407,94 +462,414 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Additional Professional Touches */
+/* Breadcrumb and Back Button Styles */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.breadcrumb-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color var(--transition-speed) ease;
+}
+
+.breadcrumb-link:hover {
+  color: var(--text-color);
+}
+
+.breadcrumb-separator {
+  margin: 0 0.5rem;
+  color: var(--text-color);
+}
+
+.breadcrumb-current {
+  color: var(--text-color);
+  font-weight: 600;
+}
+
+.back-button {
+  background: none;
+  border: none;
+  color: var(--accent-color);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-speed) ease;
+  border-radius: 50%;
+  margin-bottom: 1rem;
+}
+
+.back-button:hover {
+  background-color: rgba(100, 255, 218, 0.1);
+  transform: translateX(-5px);
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Post Content Styles */
+#post-content {
+  background-color: var(--card-background);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-top: 2rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 1px solid rgba(100, 255, 218, 0.1);
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Hover Effects and Animations */
+.card, .category-card, .profile-image, .navbar-link, .footer-link, .back-button {
+  transition: all 0.3s ease;
+}
+
+.card:hover, .category-card:hover {
+  transform: translateY(-5px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(100, 255, 218, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0);
+  }
+}
+
+.profile-image:hover {
+  animation: pulse 1.5s infinite;
+}
+
+/* Glowing effect for accent elements */
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 20px rgba(100, 255, 218, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
+  }
+}
+
+h2, .navbar-logo {
+  animation: glow 3s ease-in-out infinite;
+}
+
+/* Animated background for added visual interest */
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+body {
+  background: linear-gradient(-45deg, #0a192f, #020c1b, #1d2d50, #3a506b);
+  background-size: 400% 400%;
+  animation: gradientBG 15s ease infinite;
+}
+
+/* Smooth transition for section changes */
 .section {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity var(--transition-speed) ease, transform var(--transition-speed) ease;
+  transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .section.active {
-  opacity: 1;
-  transform: translateY(0);
+  transition-delay: 0.1s;
 }
 
-.card {
-  position: relative;
-  overflow: hidden;
-}
-
+/* Enhanced card hover effect */
 .card::before {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(100, 255, 218, 0.1) 0%, rgba(10, 25, 47, 0) 70%);
-  transform: rotate(45deg);
-  transition: all var(--transition-speed) ease;
-  opacity: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(100, 255, 218, 0.1), transparent);
+  transform: translateX(-100%);
+  transition: 0.6s;
 }
 
 .card:hover::before {
-  opacity: 1;
+  transform: translateX(100%);
 }
 
-.navbar-link {
-  position: relative;
+/* Typing animation for profile bio */
+.profile-info p.bio {
   overflow: hidden;
+  border-right: .15em solid var(--accent-color);
+  white-space: nowrap;
+  margin: 0 auto;
+  letter-spacing: .15em;
+  animation: 
+    typing 3.5s steps(40, end),
+    blink-caret .75s step-end infinite;
 }
 
-.navbar-link::before {
-  content: '';
-  position: absolute;
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: var(--accent-color); }
+}
+
+/* Improve scrollbar aesthetics */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-color);
+}
+
+/* Add a subtle parallax effect to the background */
+.parallax-bg {
+  position: fixed;
   top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background-color: var(--accent-color);
-  transition: left var(--transition-speed) ease;
-}
-
-.navbar-link:hover::before {
   left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('path-to-your-subtle-pattern.png');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.05;
+  z-index: -1;
 }
 
+/* Enhance form input animations */
+.contact-form input,
+.contact-form textarea {
+  transition: all 0.3s ease;
+}
+
+.contact-form input:focus,
+.contact-form textarea:focus {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+/* Add a subtle rotation to category icons on hover */
+.category-card i {
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover i {
+  transform: rotate(10deg);
+}
+
+/* Improve accessibility with focus styles */
+a:focus,
+button:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.5);
+}
+
+/* Add a subtle loader animation */
+.loader {
+  border: 4px solid var(--secondary-color);
+  border-top: 4px solid var(--accent-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Enhance mobile menu with a slide-in animation */
+@media (max-width: 768px) {
+  .navbar-links {
+    position: fixed;
+    top: 60px;
+    right: -100%;
+    width: 100%;
+    height: calc(100% - 60px);
+    background-color: var(--primary-color);
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding-top: 2rem;
+    transition: right 0.3s ease;
+  }
+
+  .navbar-links.active {
+    right: 0;
+  }
+
+  .navbar-link {
+    margin: 1rem 0;
+    font-size: 1.2rem;
+  }
+
+  .menu-toggle {
+    display: block;
+    cursor: pointer;
+  }
+
+  .menu-toggle span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    background-color: var(--accent-color);
+    margin: 5px 0;
+    transition: all 0.3s ease;
+  }
+
+  .menu-toggle.active span:nth-child(1) {
+    transform: rotate(-45deg) translate(-5px, 6px);
+  }
+
+  .menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-toggle.active span:nth-child(3) {
+    transform: rotate(45deg) translate(-5px, -6px);
+  }
+}
+
+/* Add smooth transitions to all interactive elements */
+a, button, input, textarea, .card, .category-card, .profile-image {
+  transition: all 0.3s ease;
+}
+
+/* Enhance accessibility with skip-to-content link */
+.skip-to-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--accent-color);
+  color: var(--primary-color);
+  padding: 8px;
+  z-index: 100;
+}
+
+.skip-to-content:focus {
+  top: 0;
+}
+
+/* Add subtle animations to list items */
+.post-list li {
+  transition: transform 0.3s ease;
+}
+
+.post-list li:hover {
+  transform: translateX(5px);
+}
+
+/* Enhance form submit button */
 .contact-form button {
   position: relative;
   overflow: hidden;
 }
 
-.contact-form button::after {
+.contact-form button::before {
   content: '';
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  background: var(--accent-color);
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(100, 255, 218, 0.4),
+    transparent
+  );
+  transition: all 0.6s;
+}
+
+.contact-form button:hover::before {
+  left: 100%;
+}
+
+/* Add a subtle scale effect to cards on hover */
+.card, .category-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover, .category-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Improve readability with a subtle text shadow */
+body {
+  text-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Add a subtle gradient overlay to images */
+.profile-image::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, rgba(100, 255, 218, 0.2), transparent);
+  border-radius: 50%;
+}
+
+/* Enhance footer with a subtle top border gradient */
+.footer {
+  border-top: 4px solid;
+  border-image: linear-gradient(to right, var(--accent-color), var(--secondary-color)) 1;
+}
+
+/* Add smooth page transitions */
+.page-transition-enter {
   opacity: 0;
-  border-radius: 100%;
-  transform: scale(1, 1) translate(-50%);
-  transform-origin: 50% 50%;
 }
 
-@keyframes ripple {
-  0% {
-    transform: scale(0, 0);
-    opacity: 1;
-  }
-  20% {
-    transform: scale(25, 25);
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-    transform: scale(40, 40);
-  }
+.page-transition-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
 }
 
-.contact-form button:focus:not(:active)::after {
-  animation: ripple 1s ease-out;
+.page-transition-exit {
+  opacity: 1;
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-in;
 }

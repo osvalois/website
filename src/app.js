@@ -1,5 +1,30 @@
 // app.js
 
+// Estado global de la aplicación
+const createState = (initialState) => {
+    const listeners = new Set();
+    const state = new Proxy(initialState, {
+        set: (target, property, value) => {
+            target[property] = value;
+            listeners.forEach(listener => listener());
+            return true;
+        }
+    });
+
+    const subscribe = (listener) => {
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+    };
+
+    return { state, subscribe };
+};
+
+const { state, subscribe } = createState({
+    currentSection: 'profile',
+    categories: [],
+    currentPost: null,
+});
+
 class Navbar {
     constructor(options) {
         this.options = options || [];
@@ -41,17 +66,19 @@ class MainSection {
 
     async render() {
         const categories = await this.fetchCategories();
+        state.categories = categories;
         return `
             <main class="container main-container">
                 ${this.renderProfileSection()}
-                ${await this.renderCategoriesSection(categories)}
+                ${await this.renderCategoriesSection()}
                 ${this.renderContactSection()}
+                <div id="post-content"></div>
             </main>`;
     }
 
     renderProfileSection() {
         return `
-            <section id="profile" class="section">
+            <section id="profile" class="section ${state.currentSection === 'profile' ? 'active' : ''}">
                 <h2>About Me</h2>
                 <div class="card profile-card">
                     <img src="https://via.placeholder.com/150" alt="Oscar Valois" class="profile-image">
@@ -67,8 +94,8 @@ class MainSection {
             </section>`;
     }
 
-    async renderCategoriesSection(categories) {
-        const categoryItems = await Promise.all(categories.map(async category => {
+    async renderCategoriesSection() {
+        const categoryItems = await Promise.all(state.categories.map(async category => {
             const files = await this.fetchFilesInCategory(category.path);
             const filesList = files.map(file => 
                 `<li><a href="#" class="post-link" data-path="${file.path}">${file.name.replace('.md', '')}</a></li>`
@@ -83,7 +110,7 @@ class MainSection {
         }));
 
         return `
-            <section id="categories" class="section">
+            <section id="categories" class="section ${state.currentSection === 'categories' ? 'active' : ''}">
                 <h2>Categories</h2>
                 <div class="categories-grid">
                     ${categoryItems.join('')}
@@ -93,7 +120,7 @@ class MainSection {
 
     renderContactSection() {
         return `
-            <section id="contact" class="section">
+            <section id="contact" class="section ${state.currentSection === 'contact' ? 'active' : ''}">
                 <h2>Get in Touch</h2>
                 <div class="card contact-card">
                     <form class="contact-form" id="contact-form">
@@ -151,7 +178,8 @@ async function renderApp() {
 
     setupNavigation();
     setupContactForm();
-    setupPostLinks(); // Agregado para configurar los enlaces de los posts dinámicamente
+    setupPostLinks();
+    updateUI(); // Llamamos a updateUI después de renderizar el contenido inicial
 }
 
 function setupNavigation() {
@@ -159,21 +187,11 @@ function setupNavigation() {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = e.target.getAttribute('data-target');
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.remove('active');
-            });
-            const targetSection = document.getElementById(targetId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
+            state.currentSection = targetId;
+            state.currentPost = null;
+            updateUI();
         });
     });
-
-    // Activate the first section by default
-    const firstSection = document.querySelector('.section');
-    if (firstSection) {
-        firstSection.classList.add('active');
-    }
 }
 
 function setupContactForm() {
@@ -181,8 +199,6 @@ function setupContactForm() {
     if (form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            // Aquí típicamente enviarías los datos del formulario a un servidor
-            // Por ahora, los mostraremos en la consola
             const formData = new FormData(form);
             console.log('Formulario enviado:', Object.fromEntries(formData));
             alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
@@ -209,10 +225,15 @@ async function fetchAndDisplayPost(path) {
         }
         const markdown = await response.text();
         const html = convertMarkdownToHtml(markdown);
-        displayPost(html);
+        const postTitle = path.split('/').pop().replace('.md', '');
+        state.currentPost = { html, title: postTitle };
+        state.currentSection = 'post';
+        updateUI();
     } catch (error) {
         console.error('Error al cargar el post:', error);
-        displayPost('<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>');
+        state.currentPost = { html: '<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>', title: 'Error' };
+        state.currentSection = 'post';
+        updateUI();
     }
 }
 
@@ -220,23 +241,70 @@ function convertMarkdownToHtml(markdown) {
     return marked.parse(markdown);
 }
 
-function displayPost(html) {
-    let postContentElement = document.getElementById('post-content');
-    if (!postContentElement) {
-        postContentElement = document.createElement('div');
-        postContentElement.id = 'post-content';
-        document.querySelector('.main-container').appendChild(postContentElement);
-    }
-    postContentElement.innerHTML = html;
-    postContentElement.style.display = 'block';
+function updateUI() {
+    const sections = document.querySelectorAll('.section');
+    const postContent = document.getElementById('post-content');
 
-    // Ocultar otras secciones
-    document.querySelectorAll('.section').forEach(section => {
+    if (sections.length === 0 || !postContent) {
+        // Si los elementos aún no están en el DOM, no hacemos nada
+        return;
+    }
+
+    sections.forEach(section => {
         section.style.display = 'none';
+        section.classList.remove('active');
     });
 
-    // Desplazar hasta el contenido del post
-    postContentElement.scrollIntoView({ behavior: 'smooth' });
+    if (state.currentSection === 'post' && state.currentPost) {
+        postContent.innerHTML = `
+            <div class="breadcrumb">
+                <a href="#" class="breadcrumb-link" data-action="home">Home</a>
+                <span class="breadcrumb-separator">/</span>
+                <span class="breadcrumb-current">${state.currentPost.title}</span>
+            </div>
+            <button class="back-button" aria-label="Go back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            ${state.currentPost.html}
+        `;
+        postContent.style.display = 'block';
+        setupBreadcrumbNavigation();
+    } else {
+        postContent.style.display = 'none';
+        const currentSection = document.getElementById(state.currentSection);
+        if (currentSection) {
+            currentSection.style.display = 'flex';
+            currentSection.classList.add('active');
+        }
+    }
 }
 
+function setupBreadcrumbNavigation() {
+    const backButton = document.querySelector('.back-button');
+    const homeLink = document.querySelector('.breadcrumb-link[data-action="home"]');
+
+    if (backButton) {
+        backButton.addEventListener('click', goBack);
+    }
+
+    if (homeLink) {
+        homeLink.addEventListener('click', goHome);
+    }
+}
+
+function goBack() {
+    state.currentSection = 'categories';
+    state.currentPost = null;
+    updateUI();
+}
+
+function goHome() {
+    state.currentSection = 'profile';
+    state.currentPost = null;
+    updateUI();
+}
+
+subscribe(updateUI);
 renderApp();
