@@ -1,0 +1,146 @@
+.markdown-body {
+  margin: 5em auto 3em auto;
+  max-width: 1000px;
+  color: #333;
+  background-color: #f9f6e9; /* Cambiado a un tono crema para simular papel */
+  font-family: 'Comic Sans MS', cursive, sans-serif; /* Fuente más informal */
+  border: 2px solid #333;
+  border-radius: 15px;
+  box-shadow: 5px 5px 0px #333;
+  padding: 20px;
+}
+
+.navbar {
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  padding: 1em;
+  background-color: #e6e0d4; /* Tono más cálido */
+  border-bottom: 2px dashed #333;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+  position: relative;
+}
+
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #333;
+  transform: scaleX(0);
+  transition: transform 0.3s ease-in-out;
+}
+
+.navbar-link:hover::after {
+  transform: scaleX(1);
+}
+
+.footer {
+  text-align: center;
+  padding: 1em;
+  background-color: #e6e0d4;
+  border-top: 2px dashed #333;
+}
+
+.footer-link {
+  text-decoration: none;
+  color: #333;
+  margin: 0 0.5em;
+  font-weight: bold;
+}
+
+.footer-link:hover {
+  text-decoration: underline wavy #333;
+}
+
+/* Estilos para dark mode */
+body.dark-mode {
+  color: #e6e0d4;
+  background-color: #2c2c2c;
+}
+
+.markdown-body.dark-mode {
+  color: #e6e0d4;
+  background-color: #1a1a1a;
+  border-color: #e6e0d4;
+  box-shadow: 5px 5px 0px #e6e0d4;
+}
+
+.navbar.dark-mode {
+  background-color: #2c2c2c;
+  border-bottom-color: #e6e0d4;
+}
+
+.navbar-link.dark-mode {
+  color: #e6e0d4;
+}
+
+.navbar-link.dark-mode::after {
+  background-color: #e6e0d4;
+}
+
+.footer.dark-mode {
+  background-color: #2c2c2c;
+  border-top-color: #e6e0d4;
+}
+
+.footer-link.dark-mode {
+  color: #e6e0d4;
+}
+
+/* Estilos adicionales para el efecto hand-drawn */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Permanent Marker', cursive;
+  text-decoration: underline wavy #333;
+}
+
+ul, ol {
+  list-style-type: none;
+  padding-left: 20px;
+}
+
+ul li::before, ol li::before {
+  content: '✎';
+  margin-right: 10px;
+}
+
+a {
+  text-decoration: none;
+  color: #0066cc;
+  border-bottom: 2px dashed #0066cc;
+}
+
+a:hover {
+  background-color: #ffff99;
+}
+
+pre {
+  background-color: #f0f0f0;
+  border: 2px solid #333;
+  border-radius: 10px;
+  padding: 15px;
+  font-family: 'Courier New', monospace;
+}
+
+blockquote {
+  border-left: 5px solid #333;
+  padding-left: 15px;
+  font-style: italic;
+  margin-left: 0;
+  position: relative;
+}
+
+blockquote::before {
+  content: '"';
+  font-size: 3em;
+  position: absolute;
+  left: -20px;
+  top: -10px;
+}
