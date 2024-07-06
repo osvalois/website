@@ -563,8 +563,7 @@ html {
     text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
   }
 }
-
-h2, .navbar-logo {
+ .navbar-logo {
   animation: glow 3s ease-in-out infinite;
 }
 
