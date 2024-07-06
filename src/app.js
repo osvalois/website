@@ -1,3 +1,5 @@
+// app.js
+
 class Navbar {
     constructor(options) {
         this.options = options || [];
@@ -20,11 +22,28 @@ class Navbar {
 }
 
 class MainSection {
-    render() {
+    async fetchPosts() {
+        const response = await fetch('https://api.github.com/repos/osvalois/website/contents/posts');
+        const files = await response.json();
+        const categories = {}; // Objeto para agrupar posts por categoría
+
+        files.forEach(file => {
+            const category = file.name.split('_')[0]; // Suponiendo que los archivos están nombrados como 'categoria_nombre_post.md'
+            if (!categories[category]) {
+                categories[category] = [];
+            }
+            categories[category].push(file);
+        });
+
+        return categories;
+    }
+
+    async render() {
+        const categories = await this.fetchPosts();
         return `
             <main class="container main-container">
                 ${this.renderProfileSection()}
-                ${this.renderLatestPostsSection()}
+                ${this.renderCategories(categories)}
                 ${this.renderContactSection()}
             </main>`;
     }
@@ -44,16 +63,23 @@ class MainSection {
             </section>`;
     }
 
-    renderLatestPostsSection() {
-        return `
-            <section id="posts" class="section">
-                <h2>Latest Posts</h2>
-                <ul class="post-list">
-                    <li><a href="#">Innovative Approaches in Solution Architecture</a></li>
-                    <li><a href="#">The Future of Secure Development Practices</a></li>
-                    <li><a href="#">Effective Project Management in the Digital Age</a></li>
-                </ul>
-            </section>`;
+    renderCategories(categories) {
+        const categoryItems = Object.keys(categories).map(category => {
+            const posts = categories[category].map(post => `
+                <li>
+                    <a href="${post.html_url}" target="_blank">${post.name}</a>
+                </li>`).join('');
+
+            return `
+                <section id="${category}" class="section">
+                    <h2>${category}</h2>
+                    <ul class="post-list">
+                        ${posts}
+                    </ul>
+                </section>`;
+        }).join('');
+
+        return categoryItems;
     }
 
     renderContactSection() {
@@ -91,40 +117,40 @@ class Footer {
     }
 }
 
-// Instanciación de componentes y renderización en el DOM
-const navbar = new Navbar([
-    { href: "#profile", text: "About", target: "profile" },
-    { href: "#posts", text: "Posts", target: "posts" },
-    { href: "#contact", text: "Contact", target: "contact" }
-]);
+async function renderApp() {
+    const navbar = new Navbar([
+        { href: "#profile", text: "About", target: "profile" },
+        { href: "#contact", text: "Contact", target: "contact" }
+    ]);
 
-const mainSection = new MainSection();
-const footer = new Footer([
-    { text: 'Github', href: 'https://github.com/osvalois' },
-    { text: 'Dockerhub', href: 'https://hub.docker.com/u/osvalois' },
-    { text: 'Dev.to', href: 'https://dev.to/osvalois' }
-]);
+    const mainSection = new MainSection();
+    const footer = new Footer([
+        { text: 'Github', href: 'https://github.com/osvalois' },
+        { text: 'Dockerhub', href: 'https://hub.docker.com/u/osvalois' },
+        { text: 'Dev.to', href: 'https://dev.to/osvalois' }
+    ]);
 
-// Rendering in the DOM
-document.getElementById('app').innerHTML = `
-    ${navbar.render()}
-    ${mainSection.render()}
-    ${footer.render()}
-`;
+    document.getElementById('app').innerHTML = `
+        ${navbar.render()}
+        ${await mainSection.render()}
+        ${footer.render()}
+    `;
 
-// Adding event listeners for menu clicks
-document.querySelectorAll('.navbar-link').forEach(link => {
-    link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = e.target.getAttribute('data-target');
-        document.querySelectorAll('.section').forEach(section => {
-            section.classList.add('hidden');
-            section.classList.remove('fade-in');
+    document.querySelectorAll('.navbar-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = e.target.getAttribute('data-target');
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+                section.classList.remove('fade-in');
+            });
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('fade-in');
+            }
         });
-        const targetSection = document.getElementById(targetId);
-        if (targetSection) {
-            targetSection.classList.remove('hidden');
-            targetSection.classList.add('fade-in');
-        }
     });
-});
+}
+
+renderApp();
