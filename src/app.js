@@ -1,160 +1,11 @@
-// app.js
-
-// Estado global de la aplicación
-const createState = (initialState) => {
-    const listeners = new Set();
-    const state = new Proxy(initialState, {
-        set: (target, property, value) => {
-            target[property] = value;
-            listeners.forEach(listener => listener());
-            return true;
-        }
-    });
-
-    const subscribe = (listener) => {
-        listeners.add(listener);
-        return () => listeners.delete(listener);
-    };
-
-    return { state, subscribe };
-};
-
-const { state, subscribe } = createState({
-    currentSection: 'profile',
-    categories: [],
-    currentPost: null,
-});
-
-class Navbar {
-    constructor(options) {
-        this.options = options || [];
-    }
-
-    render() {
-        const links = this.options.map(option =>
-            `<a href="#${option.target}" class="navbar-link" data-target="${option.target}">${option.text}</a>`
-        ).join('');
-        return `
-            <nav class="navbar">
-                <div class="container navbar-container">
-                    <a href="/" class="navbar-logo">Oscar Valois</a>
-                    <div class="navbar-links">
-                        ${links}
-                    </div>
-                </div>
-            </nav>`;
-    }
-}
-
-class MainSection {
-    constructor() {
-        this.githubUsername = 'osvalois';
-        this.githubRepo = 'website';
-    }
-
-    async fetchCategories() {
-        const response = await fetch(`https://api.github.com/repos/${this.githubUsername}/${this.githubRepo}/contents/posts`);
-        const categories = await response.json();
-        return categories.filter(item => item.type === 'dir');
-    }
-
-    async fetchFilesInCategory(categoryPath) {
-        const response = await fetch(`https://api.github.com/repos/${this.githubUsername}/${this.githubRepo}/contents/${categoryPath}`);
-        const files = await response.json();
-        return files.filter(file => file.type === 'file' && file.name.endsWith('.md'));
-    }
-
-    async render() {
-        const categories = await this.fetchCategories();
-        state.categories = categories;
-        return `
-            <main class="container main-container">
-                ${this.renderProfileSection()}
-                ${await this.renderCategoriesSection()}
-                ${this.renderContactSection()}
-                <div id="post-content"></div>
-            </main>`;
-    }
-
-    renderProfileSection() {
-        return `
-            <section id="profile" class="section ${state.currentSection === 'profile' ? 'active' : ''}">
-                <h2>About Me</h2>
-                <div class="card profile-card">
-                    <img src="https://via.placeholder.com/150" alt="Oscar Valois" class="profile-image">
-                    <div class="profile-info">
-                        <p><strong>Name:</strong> Oscar Valois</p>
-                        <p><strong>Role:</strong> Product Director</p>
-                        <p><strong>Bio:</strong> Passionate about creating innovative solutions and leading high-performance teams.</p>
-                        <p><strong>Skills:</strong> JavaScript, Ruby on Rails, UI/UX Design, Product Management</p>
-                        <p><strong>Education:</strong> BS in Computer Science, University of Example</p>
-                        <p><strong>Experience:</strong> 10+ years in software development and project management</p>
-                    </div>
-                </div>
-            </section>`;
-    }
-
-    async renderCategoriesSection() {
-        const categoryItems = await Promise.all(state.categories.map(async category => {
-            const files = await this.fetchFilesInCategory(category.path);
-            const filesList = files.map(file => 
-                `<li><a href="#" class="post-link" data-path="${file.path}">${file.name.replace('.md', '')}</a></li>`
-            ).join('');
-            return `
-                <div class="category-card">
-                    <h3>${category.name}</h3>
-                    <ul class="post-list">
-                        ${filesList || '<li>No posts found in this category.</li>'}
-                    </ul>
-                </div>`;
-        }));
-
-        return `
-            <section id="categories" class="section ${state.currentSection === 'categories' ? 'active' : ''}">
-                <h2>Categories</h2>
-                <div class="categories-grid">
-                    ${categoryItems.join('')}
-                </div>
-            </section>`;
-    }
-
-    renderContactSection() {
-        return `
-            <section id="contact" class="section ${state.currentSection === 'contact' ? 'active' : ''}">
-                <h2>Get in Touch</h2>
-                <div class="card contact-card">
-                    <form class="contact-form" id="contact-form">
-                        <input type="text" name="name" placeholder="Your Name" required>
-                        <input type="email" name="email" placeholder="Your Email" required>
-                        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
-                        <button type="submit">Send Message</button>
-                    </form>
-                </div>
-            </section>`;
-    }
-}
-
-class Footer {
-    constructor(options) {
-        this.options = options || [];
-    }
-
-    render() {
-        const links = this.options.map(option =>
-            `<a href="${option.href}" class="footer-link" target="_blank" rel="noopener noreferrer">${option.text}</a>`
-        ).join('');
-        return `
-            <footer class="footer">
-                <div class="container">
-                    <p>&copy; ${new Date().getFullYear()} Oscar Valois. All rights reserved.</p>
-                    <div class="footer-links">
-                        ${links}
-                    </div>
-                </div>
-            </footer>`;
-    }
-}
-
+import { Navbar } from "./components/Navbar.js";
+import { state, subscribe } from "./state/State.js";
+import { MainSection } from "./views/MainSection.js";
+import { ProfileView } from "./views/ProfileView.js";
+import { CategoriesView } from "./views/CategoriesView.js";
+import { ContactView } from "./views/ContactView.js";
+import { PostView } from "./views/PostView.js";
+import { Footer } from "./components/Footer.js";
 async function renderApp() {
     const navbar = new Navbar([
         { target: "profile", text: "About" },
@@ -172,14 +23,14 @@ async function renderApp() {
     const appElement = document.getElementById('app');
     appElement.innerHTML = `
         ${navbar.render()}
-        ${await mainSection.render()}
+        <div id="main-section" class="section active"></div>
         ${footer.render()}
     `;
 
     setupNavigation();
     setupContactForm();
     setupPostLinks();
-    updateUI(); // Llamamos a updateUI después de renderizar el contenido inicial
+    updateUI();
 }
 
 function setupNavigation() {
@@ -242,69 +93,36 @@ function convertMarkdownToHtml(markdown) {
 }
 
 function updateUI() {
-    const sections = document.querySelectorAll('.section');
-    const postContent = document.getElementById('post-content');
+    const mainSectionElement = document.getElementById('main-section');
 
-    if (sections.length === 0 || !postContent) {
-        // Si los elementos aún no están en el DOM, no hacemos nada
+    if (!mainSectionElement) {
         return;
     }
 
-    sections.forEach(section => {
-        section.style.display = 'none';
-        section.classList.remove('active');
+    let view;
+
+    switch (state.currentSection) {
+        case 'profile':
+            view = new ProfileView();
+            break;
+        case 'categories':
+            view = new CategoriesView();
+            break;
+        case 'contact':
+            view = new ContactView();
+            break;
+        case 'post':
+            view = new PostView();
+            break;
+        default:
+            return;
+    }
+
+    view.render().then(html => {
+        mainSectionElement.innerHTML = html;
+        setupPostLinks();
     });
-
-    if (state.currentSection === 'post' && state.currentPost) {
-        postContent.innerHTML = `
-            <div class="breadcrumb">
-                <a href="#" class="breadcrumb-link" data-action="home">Home</a>
-                <span class="breadcrumb-separator">/</span>
-                <span class="breadcrumb-current">${state.currentPost.title}</span>
-            </div>
-            <button class="back-button" aria-label="Go back">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-            </button>
-            ${state.currentPost.html}
-        `;
-        postContent.style.display = 'block';
-        setupBreadcrumbNavigation();
-    } else {
-        postContent.style.display = 'none';
-        const currentSection = document.getElementById(state.currentSection);
-        if (currentSection) {
-            currentSection.style.display = 'flex';
-            currentSection.classList.add('active');
-        }
-    }
 }
 
-function setupBreadcrumbNavigation() {
-    const backButton = document.querySelector('.back-button');
-    const homeLink = document.querySelector('.breadcrumb-link[data-action="home"]');
-
-    if (backButton) {
-        backButton.addEventListener('click', goBack);
-    }
-
-    if (homeLink) {
-        homeLink.addEventListener('click', goHome);
-    }
-}
-
-function goBack() {
-    state.currentSection = 'categories';
-    state.currentPost = null;
-    updateUI();
-}
-
-function goHome() {
-    state.currentSection = 'profile';
-    state.currentPost = null;
-    updateUI();
-}
-
+document.addEventListener('DOMContentLoaded', renderApp);
 subscribe(updateUI);
-renderApp();
