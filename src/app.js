@@ -1,3 +1,5 @@
+// app.js
+
 import { Navbar } from "./components/Navbar.js";
 import { state, subscribe } from "./state/State.js";
 import { MainSection } from "./views/MainSection.js";
@@ -6,6 +8,7 @@ import { CategoriesView } from "./views/CategoriesView.js";
 import { ContactView } from "./views/ContactView.js";
 import { PostView } from "./views/PostView.js";
 import { Footer } from "./components/Footer.js";
+
 async function renderApp() {
     const navbar = new Navbar([
         { target: "profile", text: "About" },
@@ -112,7 +115,7 @@ function updateUI() {
             view = new ContactView();
             break;
         case 'post':
-            view = new PostView();
+            view = new PostView(state.currentPost); // Pasar el currentPost
             break;
         default:
             return;
@@ -121,8 +124,23 @@ function updateUI() {
     view.render().then(html => {
         mainSectionElement.innerHTML = html;
         setupPostLinks();
+        setupBackButton(); // Agregar setupBackButton para manejar el botón de regreso
+    });
+}
+
+function setupBackButton() {
+    document.querySelectorAll('.breadcrumb-link').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = e.target.getAttribute('data-target');
+            state.currentSection = targetId;
+            state.currentPost = null;
+            updateUI();
+        });
     });
 }
 
 document.addEventListener('DOMContentLoaded', renderApp);
 subscribe(updateUI);
+
+

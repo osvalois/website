@@ -1,4 +1,5 @@
-//state/State.js
+// state/State.js
+
 const createState = (initialState) => {
     const listeners = new Set();
     const state = new Proxy(initialState, {

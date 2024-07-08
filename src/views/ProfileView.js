@@ -1,6 +1,9 @@
 export class ProfileView {
     render() {
         return Promise.resolve(`
+        <style>
+        @import url('public/styles/profile-section.css');
+        </style>
         <h2>About Me</h2>
         <div class="card profile-card">
             <img src="https://via.placeholder.com/150" alt="Oscar Valois" class="profile-image">

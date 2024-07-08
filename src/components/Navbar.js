@@ -7,7 +7,11 @@ export class Navbar {
         const links = this.options.map(option =>
             `<a href="#${option.target}" class="navbar-link" data-target="${option.target}">${option.text}</a>`
         ).join('');
+
         return `
+            <style>
+                @import url('public/styles/navbar.css');
+            </style>
             <nav class="navbar">
                 <div class="container navbar-container">
                     <a href="/" class="navbar-logo">Oscar Valois</a>
@@ -15,6 +19,7 @@ export class Navbar {
                         ${links}
                     </div>
                 </div>
-            </nav>`;
+            </nav>
+        `;
     }
 }

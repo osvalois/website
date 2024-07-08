@@ -32,77 +32,6 @@ body {
   padding: 0 40px;
 }
 
-/* Improved Navbar Styles */
-.navbar {
-  background-color: rgba(10, 25, 47, 0.95);
-  backdrop-filter: blur(10px);
-  padding: 1rem 0;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-  transition: all var(--transition-speed) ease;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.navbar-logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent-color);
-  text-decoration: none;
-  transition: color var(--transition-speed) ease;
-  letter-spacing: 1px;
-}
-
-.navbar-logo:hover {
-  color: var(--text-color);
-}
-
-.navbar-links {
-  display: flex;
-}
-
-.navbar-link {
-  color: var(--text-color);
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  margin-left: 1rem;
-  font-weight: 500;
-  transition: all var(--transition-speed) ease;
-  border-radius: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.navbar-link::before, .navbar-link::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background-color: var(--accent-color);
-  left: -100%;
-  transition: all 0.3s ease;
-}
-
-.navbar-link::before {
-  top: 0;
-}
-
-.navbar-link::after {
-  bottom: 0;
-  transition-delay: 0.1s;
-}
-
-.navbar-link:hover::before, .navbar-link:hover::after {
-  left: 0;
-}
-
 /* Improved Main Content Styles */
 .main-container {
   padding-top: 4rem;
@@ -155,7 +84,7 @@ h3 {
   border-radius: 12px;
   padding: 2.5rem;
   margin-bottom: 3rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: all var(--transition-speed) ease;
   border: 1px solid rgba(100, 255, 218, 0.1);
   width: 100%;
@@ -164,145 +93,8 @@ h3 {
 
 .card:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
   border-color: var(--accent-color);
-}
-
-/* Improved Profile Section Styles */
-.profile-card {
-  display: flex;
-  align-items: flex-start;
-  gap: 2rem;
-}
-
-.profile-image {
-  width: 180px;
-  height: 180px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 3px solid var(--accent-color);
-  box-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
-  transition: all 0.3s ease;
-}
-
-.profile-image:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 30px rgba(100, 255, 218, 0.5);
-}
-
-.profile-info p {
-  margin-bottom: 0.8rem;
-  font-size: 1.1rem;
-}
-
-/* Improved Categories Section Styles */
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  width: 100%;
-}
-
-.category-card {
-  background-color: var(--card-background);
-  border-radius: 12px;
-  padding: 2rem;
-  transition: all var(--transition-speed) ease;
-  border: 1px solid rgba(100, 255, 218, 0.1);
-}
-
-.category-card:hover {
-  transform: translateY(-5px) scale(1.03);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-  border-color: var(--accent-color);
-}
-
-.post-list {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.post-list li {
-  margin-bottom: 1rem;
-  position: relative;
-  padding-left: 1.5rem;
-}
-
-.post-list li::before {
-  content: '▹';
-  position: absolute;
-  left: 0;
-  color: var(--accent-color);
-}
-
-.post-list a {
-  color: var(--text-color);
-  text-decoration: none;
-  font-weight: 500;
-  transition: color var(--transition-speed) ease;
-}
-
-.post-list a:hover {
-  color: var(--accent-color);
-}
-
-/* Improved Contact Section Styles */
-.contact-card {
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.contact-form input,
-.contact-form textarea {
-  width: 100%;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  border: 1px solid var(--secondary-color);
-  border-radius: 4px;
-  background-color: rgba(10, 25, 47, 0.5);
-  color: var(--text-color);
-  font-family: 'Inter', 'Roboto', sans-serif;
-  transition: all var(--transition-speed) ease;
-  font-size: 1rem;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(100, 255, 218, 0.2);
-}
-
-.contact-form button {
-  background-color: transparent;
-  color: var(--accent-color);
-  border: 1px solid var(--accent-color);
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  font-weight: 600;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all var(--transition-speed) ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.contact-form button:hover {
-  background-color: rgba(100, 255, 218, 0.1);
-}
-
-.contact-form button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  background: var(--accent-color);
-  opacity: 0;
-  border-radius: 100%;
-  transform: scale(1, 1) translate(-50%);
-  transform-origin: 50% 50%;
 }
 
 @keyframes ripple {
@@ -310,55 +102,16 @@ h3 {
     transform: scale(0, 0);
     opacity: 1;
   }
+
   20% {
     transform: scale(25, 25);
     opacity: 1;
   }
+
   100% {
     opacity: 0;
     transform: scale(40, 40);
   }
-}
-
-.contact-form button:focus:not(:active)::after {
-  animation: ripple 1s ease-out;
-}
-
-/* Improved Footer Styles */
-.footer {
-  background-color: rgba(10, 25, 47, 0.95);
-  color: var(--text-color);
-  text-align: center;
-  padding: 2.5rem 0;
-  margin-top: 2.5rem;
-  border-top: 1px solid var(--secondary-color);
-}
-
-.footer-links {
-  margin-top: 1.5rem;
-}
-
-.footer-link {
-  color: var(--text-color);
-  text-decoration: none;
-  margin: 0 10px;
-  transition: color var(--transition-speed) ease;
-  position: relative;
-}
-
-.footer-link::after {
-  content: '';
-  position: absolute;
-  bottom: -2px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background-color: var(--accent-color);
-  transition: width var(--transition-speed) ease;
-}
-
-.footer-link:hover::after {
-  width: 100%;
 }
 
 /* Enhanced Animations */
@@ -367,6 +120,7 @@ h3 {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -383,24 +137,14 @@ h3 {
     padding: 0 20px;
   }
 
-  .navbar-container {
-    flex-direction: column;
-  }
-
-  .navbar-links {
-    margin-top: 1rem;
-  }
-
-  .navbar-link {
-    margin: 0.5rem 0;
-  }
-
   .main-container {
     padding-top: 6rem;
   }
 
   .section {
-    top: 2rem;
+    top: 7rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   h2 {
@@ -413,16 +157,6 @@ h3 {
 
   .card {
     padding: 1.5rem;
-  }
-
-  .profile-card {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .categories-grid {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -514,67 +248,47 @@ html {
   height: 24px;
 }
 
-/* Post Content Styles */
-#post-content {
-  background-color: var(--card-background);
-  border-radius: 12px;
-  padding: 2rem;
-  margin-top: 2rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-  border: 1px solid rgba(100, 255, 218, 0.1);
-  animation: fadeIn 0.5s ease-out;
-}
-
 /* Hover Effects and Animations */
-.card, .category-card, .profile-image, .navbar-link, .footer-link, .back-button {
+.card,
+.category-card,
+.profile-image,
+.navbar-link,
+.footer-link,
+.back-button {
   transition: all 0.3s ease;
 }
 
-.card:hover, .category-card:hover {
+.card:hover,
+.category-card:hover {
   transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
 }
 
 @keyframes pulse {
   0% {
     box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 10px rgba(100, 255, 218, 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(100, 255, 218, 0);
   }
 }
 
-.profile-image:hover {
-  animation: pulse 1.5s infinite;
-}
-
-/* Glowing effect for accent elements */
-@keyframes glow {
-  0% {
-    text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
-  }
-  50% {
-    text-shadow: 0 0 20px rgba(100, 255, 218, 0.8);
-  }
-  100% {
-    text-shadow: 0 0 5px rgba(100, 255, 218, 0.5);
-  }
-}
- .navbar-logo {
-  animation: glow 3s ease-in-out infinite;
-}
 
 /* Animated background for added visual interest */
 @keyframes gradientBG {
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -612,26 +326,27 @@ body {
   transform: translateX(100%);
 }
 
-/* Typing animation for profile bio */
-.profile-info p.bio {
-  overflow: hidden;
-  border-right: .15em solid var(--accent-color);
-  white-space: nowrap;
-  margin: 0 auto;
-  letter-spacing: .15em;
-  animation: 
-    typing 3.5s steps(40, end),
-    blink-caret .75s step-end infinite;
-}
 
 @keyframes typing {
-  from { width: 0 }
-  to { width: 100% }
+  from {
+    width: 0
+  }
+
+  to {
+    width: 100%
+  }
 }
 
 @keyframes blink-caret {
-  from, to { border-color: transparent }
-  50% { border-color: var(--accent-color); }
+
+  from,
+  to {
+    border-color: transparent
+  }
+
+  50% {
+    border-color: var(--accent-color);
+  }
 }
 
 /* Improve scrollbar aesthetics */
@@ -668,27 +383,6 @@ body {
   z-index: -1;
 }
 
-/* Enhance form input animations */
-.contact-form input,
-.contact-form textarea {
-  transition: all 0.3s ease;
-}
-
-.contact-form input:focus,
-.contact-form textarea:focus {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-/* Add a subtle rotation to category icons on hover */
-.category-card i {
-  transition: transform 0.3s ease;
-}
-
-.category-card:hover i {
-  transform: rotate(10deg);
-}
-
 /* Improve accessibility with focus styles */
 a:focus,
 button:focus,
@@ -710,64 +404,22 @@ textarea:focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* Enhance mobile menu with a slide-in animation */
-@media (max-width: 768px) {
-  .navbar-links {
-    position: fixed;
-    top: 60px;
-    right: -100%;
-    width: 100%;
-    height: calc(100% - 60px);
-    background-color: var(--primary-color);
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    padding-top: 2rem;
-    transition: right 0.3s ease;
+  0% {
+    transform: rotate(0deg);
   }
 
-  .navbar-links.active {
-    right: 0;
-  }
-
-  .navbar-link {
-    margin: 1rem 0;
-    font-size: 1.2rem;
-  }
-
-  .menu-toggle {
-    display: block;
-    cursor: pointer;
-  }
-
-  .menu-toggle span {
-    display: block;
-    width: 25px;
-    height: 3px;
-    background-color: var(--accent-color);
-    margin: 5px 0;
-    transition: all 0.3s ease;
-  }
-
-  .menu-toggle.active span:nth-child(1) {
-    transform: rotate(-45deg) translate(-5px, 6px);
-  }
-
-  .menu-toggle.active span:nth-child(2) {
-    opacity: 0;
-  }
-
-  .menu-toggle.active span:nth-child(3) {
-    transform: rotate(45deg) translate(-5px, -6px);
+  100% {
+    transform: rotate(360deg);
   }
 }
-
 /* Add smooth transitions to all interactive elements */
-a, button, input, textarea, .card, .category-card, .profile-image {
+a,
+button,
+input,
+textarea,
+.card,
+.category-card,
+.profile-image {
   transition: all 0.3s ease;
 }
 
@@ -786,72 +438,21 @@ a, button, input, textarea, .card, .category-card, .profile-image {
   top: 0;
 }
 
-/* Add subtle animations to list items */
-.post-list li {
-  transition: transform 0.3s ease;
-}
-
-.post-list li:hover {
-  transform: translateX(5px);
-}
-
-/* Enhance form submit button */
-.contact-form button {
-  position: relative;
-  overflow: hidden;
-}
-
-.contact-form button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(100, 255, 218, 0.4),
-    transparent
-  );
-  transition: all 0.6s;
-}
-
-.contact-form button:hover::before {
-  left: 100%;
-}
-
 /* Add a subtle scale effect to cards on hover */
-.card, .category-card {
+.card,
+.category-card {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.card:hover, .category-card:hover {
+.card:hover,
+.category-card:hover {
   transform: scale(1.03);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Improve readability with a subtle text shadow */
 body {
-  text-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-/* Add a subtle gradient overlay to images */
-.profile-image::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, rgba(100, 255, 218, 0.2), transparent);
-  border-radius: 50%;
-}
-
-/* Enhance footer with a subtle top border gradient */
-.footer {
-  border-top: 4px solid;
-  border-image: linear-gradient(to right, var(--accent-color), var(--secondary-color)) 1;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Add smooth page transitions */

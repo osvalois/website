@@ -1,16 +1,19 @@
+// PostView.js
+
 export class PostView {
-    render(post) {
+    constructor(post) {
+        this.post = post;
+    }
+
+    render() {
+        const post = this.post || { title: 'Post no encontrado', html: '<p>Contenido no disponible.</p>' };
         return Promise.resolve(`
             <div class="breadcrumb">
-                <a href="#" class="breadcrumb-link" data-action="home">Home</a>
+                <a href="#" class="breadcrumb-link" data-target="categories">Categories</a>
                 <span class="breadcrumb-separator">/</span>
                 <span class="breadcrumb-current">${post.title}</span>
             </div>
-            <button class="back-button" aria-label="Go back">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M19 12H5M12 19l-7-7 7-7"/>
-                </svg>
-            </button>
-            ${post.html}`);
+            ${post.html}
+        `);
     }
 }

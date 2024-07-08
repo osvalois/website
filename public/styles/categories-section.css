@@ -1,0 +1,86 @@
+/* Improved Categories Section Styles */
+.categories-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+
+/* Add a subtle rotation to category icons on hover */
+.category-card i {
+    transition: transform 0.3s ease;
+  }
+  
+  .category-card:hover i {
+    transform: rotate(10deg);
+  }
+  
+.category-card {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all var(--transition-speed) ease;
+    border: 1px solid rgba(100, 255, 218, 0.1);
+}
+
+.category-card:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-color);
+}
+
+.post-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.post-list li {
+    margin-bottom: 1rem;
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.post-list li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent-color);
+}
+
+.post-list a {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color var(--transition-speed) ease;
+}
+
+.post-list a:hover {
+    color: var(--accent-color);
+}
+
+/* Post Content Styles */
+#post-content {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    padding: 2rem;
+    margin-top: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(100, 255, 218, 0.1);
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Add subtle animations to list items */
+.post-list li {
+    transition: transform 0.3s ease;
+}
+
+.post-list li:hover {
+    transform: translateX(5px);
+}
+
+@media (max-width: 768px) {
+    .categories-grid {
+        grid-template-columns: 1fr;
+    }
+}

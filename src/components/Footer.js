@@ -8,6 +8,9 @@ export class Footer {
             `<a href="${option.href}" class="footer-link" target="_blank" rel="noopener noreferrer">${option.text}</a>`
         ).join('');
         return `
+            <style>
+                @import url('public/styles/footer.css');
+            </style>
             <footer class="footer">
                 <div class="container">
                     <p>&copy; ${new Date().getFullYear()} Oscar Valois. All rights reserved.</p>

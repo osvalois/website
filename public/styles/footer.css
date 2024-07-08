@@ -1,0 +1,42 @@
+/* Improved Footer Styles */
+.footer {
+    background-color: rgba(10, 25, 47, 0.95);
+    color: var(--text-color);
+    text-align: center;
+    padding: 2.5rem 0;
+    margin-top: 2.5rem;
+    border-top: 1px solid var(--secondary-color);
+}
+
+.footer-links {
+    margin-top: 1.5rem;
+}
+
+.footer-link {
+    color: var(--text-color);
+    text-decoration: none;
+    margin: 0 10px;
+    transition: color var(--transition-speed) ease;
+    position: relative;
+}
+
+.footer-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background-color: var(--accent-color);
+    transition: width var(--transition-speed) ease;
+}
+
+.footer-link:hover::after {
+    width: 100%;
+}
+
+/* Enhance footer with a subtle top border gradient */
+.footer {
+    border-top: 4px solid;
+    border-image: linear-gradient(to right, var(--accent-color), var(--secondary-color)) 1;
+}
