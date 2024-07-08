@@ -28,7 +28,6 @@ app.use(
         'connect-src': ["'self'", 'https://api.github.com', 'https://raw.githubusercontent.com'],
       },
     },
-    // Otras configuraciones de Helmet para mejorar la seguridad
     dnsPrefetchControl: { allow: false },
     frameguard: { action: 'deny' },
     hidePoweredBy: true,
@@ -52,11 +51,16 @@ app.use(morgan('combined'));
 // Aplicar limitador de tasa a todas las solicitudes
 app.use(limiter);
 
-// Servir el archivo HTML estático
+// Servir archivos estáticos desde el directorio actual
 app.use(express.static(path.join(__dirname)));
 
 // Ruta para servir el archivo HTML principal
 app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Ruta de fallback para manejar todas las solicitudes y enviar index.html
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
