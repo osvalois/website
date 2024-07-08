@@ -15,7 +15,7 @@ pids
 lib/
 vendor/
 firebase/
-
+fly.toml
 # Environment variables
 .env
 
