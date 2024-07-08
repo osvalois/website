@@ -9,6 +9,7 @@
   --card-background: rgba(29, 45, 80, 0.8);
   --hover-color: #233554;
   --transition-speed: 0.3s;
+  
 }
 
 * {
@@ -43,7 +44,6 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
   position: absolute;
   top: 4rem;
   left: 0;
@@ -383,6 +383,16 @@ body {
   z-index: -1;
 }
 
+
+/* Add a subtle rotation to category icons on hover */
+.category-card i {
+  transition: transform 0.3s ease;
+}
+
+.category-card:hover i {
+  transform: rotate(10deg);
+}
+
 /* Improve accessibility with focus styles */
 a:focus,
 button:focus,
@@ -412,6 +422,7 @@ textarea:focus {
     transform: rotate(360deg);
   }
 }
+
 /* Add smooth transitions to all interactive elements */
 a,
 button,
@@ -446,7 +457,7 @@ textarea,
 
 .card:hover,
 .category-card:hover {
-  transform: scale(1.03);
+  transform: scale(1);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
@@ -472,4 +483,10 @@ body {
 .page-transition-exit-active {
   opacity: 0;
   transition: opacity 300ms ease-in;
+}
+@media (min-width: 769px) {
+  .section {
+    padding-left: 60px;
+    padding-right: 60px;
+  }
 }

@@ -1,9 +1,9 @@
 export class ContactView {
     render() {
         return Promise.resolve(`
-            <style>
-            @import url('public/styles/contact-section.css');
-            </style>
+                <style>
+                @import url('public/styles/contact-section.css');
+                </style>
             <h2>Get in Touch</h2>
             <div class="card contact-card">
                 <form class="contact-form" id="contact-form">

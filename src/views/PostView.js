@@ -8,6 +8,9 @@ export class PostView {
     render() {
         const post = this.post || { title: 'Post no encontrado', html: '<p>Contenido no disponible.</p>' };
         return Promise.resolve(`
+        <style>
+        @import url('public/styles/post-section.css');
+        </style>
             <div class="breadcrumb">
                 <a href="#" class="breadcrumb-link" data-target="categories">Categories</a>
                 <span class="breadcrumb-separator">/</span>

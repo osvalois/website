@@ -1,7 +1,5 @@
 # Pingendata: Innovación en la Gestión de Documentación para Proyectos de Bases de Datos
 
----
-
 ## Introducción
 En el dinámico mundo de la tecnología y la gestión de bases de datos, contar con una documentación completa y precisa es crucial para el éxito de cualquier proyecto. Pingendata ofrece una solución integral que centraliza y organiza toda la información crítica del proyecto, dirigida a equipos de arquitectura y administradores de bases de datos (DBAs). Facilita la colaboración y asegura que todos los aspectos necesarios estén documentados de manera clara y accesible.
 
