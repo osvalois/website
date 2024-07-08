@@ -3,10 +3,7 @@
     font-family: 'Roboto', sans-serif;
     color: var(--text-color);
     line-height: 1.6;
-    background: var(--background-color);
     border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: background 0.3s ease, transform 0.3s ease;
 }
 
 .post:hover {
@@ -19,7 +16,7 @@
     font-weight: 700;
     color: var(--primary-color);
     margin-bottom: 0.5rem;
-    transition: color 0.3s ease;
+    transition: color var(--transition-speed) ease;
 }
 
 .post-title:hover {
@@ -52,22 +49,22 @@
 }
 
 .post-content a {
-    color: var(--link-color);
+    color: var(--accent-color);
     text-decoration: none;
-    border-bottom: 1px solid var(--link-color);
-    transition: color 0.3s ease, border-bottom-color 0.3s ease;
+    border-bottom: 1px solid var(--accent-color);
+    transition: color var(--transition-speed) ease, border-bottom-color var(--transition-speed) ease;
 }
 
 .post-content a:hover {
-    color: var(--link-hover-color);
-    border-bottom-color: var(--link-hover-color);
+    color: var(--light-accent);
+    border-bottom-color: var(--light-accent);
 }
 
 .post-content img {
     max-width: 100%;
     border-radius: 8px;
     margin-bottom: 1rem;
-    transition: transform 0.3s ease;
+    transition: transform var(--transition-speed) ease;
 }
 
 .post-content img:hover {
@@ -81,8 +78,8 @@
 }
 
 .post-content pre {
-    background: var(--code-background-color);
-    color: var(--code-text-color);
+    background: var(--card-background);
+    color: var(--text-color);
     padding: 1rem;
     border-radius: 8px;
     overflow-x: auto;
@@ -93,8 +90,8 @@
 .post-content code {
     font-family: 'Fira Code', monospace;
     font-size: 0.95rem;
-    background: var(--code-inline-background-color);
-    color: var(--code-inline-text-color);
+    background: var(--background-color);
+    color: var(--accent-color);
     padding: 0.2rem 0.4rem;
     border-radius: 4px;
 }
@@ -113,17 +110,17 @@
 }
 
 .post-footer .tags .tag {
-    background: var(--tag-background-color);
-    color: var(--tag-text-color);
+    background: var(--card-background);
+    color: var(--accent-color);
     padding: 0.3rem 0.6rem;
     border-radius: 4px;
     font-size: 0.9rem;
-    transition: background 0.3s ease, color 0.3s ease;
+    transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
 }
 
 .post-footer .tags .tag:hover {
-    background: var(--tag-background-hover-color);
-    color: var(--tag-text-hover-color);
+    background: var(--accent-color);
+    color: var(--primary-color);
 }
 
 .post-footer .comments {

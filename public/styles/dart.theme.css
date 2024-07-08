@@ -1,57 +1,68 @@
 /* styles.css */
 
 :root {
-  --primary-color: #0a192f;
-  --secondary-color: #112240;
-  --accent-color: #64ffda;
-  --text-color: #ccd6f6;
-  --background-color: #020c1b;
-  --card-background: rgba(29, 45, 80, 0.8);
-  --hover-color: #233554;
+  --primary-color: #1C2026; /* eerie-black */
+  --secondary-color: #1A1D21; /* eerie-black-2 */
+  --accent-color: #957267; /* beaver */
+  --text-color: #e0e0e0; /* Color claro para texto */
+  --background-color: #373A3C; /* onyx */
+  --card-background: rgba(86, 61, 54, 0.8); /* liver con transparencia */
+  --hover-color: #563D36; /* liver */
+  --light-accent: #b08e84; /* Versión más clara de beaver */
+  --dark-accent: #6d534a; /* Versión más oscura de beaver */
+  --border-color: #4a4d4f; /* Tono más claro de onyx para bordes */
   --transition-speed: 0.3s;
-  
+  --accent-color-rgb: 149, 114, 103; /* Los valores RGB de #957267 */
+
 }
 
-* {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 body {
   font-family: 'Inter', 'Roboto', sans-serif;
   background-color: var(--background-color);
-  background-image: linear-gradient(to bottom right, #020c1b, #0a192f);
+  background-image: linear-gradient(to bottom right, var(--background-color), var(--primary-color));
   color: var(--text-color);
   line-height: 1.6;
   font-size: 16px;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  min-height: 100vh;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 40px;
+  padding: 0 clamp(20px, 5vw, 40px);
 }
 
-/* Improved Main Content Styles */
 .main-container {
   padding-top: 4rem;
   min-height: calc(100vh - 4rem);
 }
 
 .section {
+  --section-padding: 2rem;
   min-height: calc(100vh - 4rem);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   position: absolute;
-  top: 4rem;
-  left: 0;
-  right: 0;
+  inset: 4rem 0 0;
   opacity: 0;
   visibility: hidden;
-  transition: opacity var(--transition-speed) ease, visibility var(--transition-speed) ease, transform 0.5s ease;
-  padding: 2rem 0;
+  transition: 
+    opacity var(--transition-speed) ease,
+    visibility var(--transition-speed) ease,
+    transform 0.5s ease;
+  padding: var(--section-padding) 0;
   transform: translateY(20px);
 }
 
@@ -60,21 +71,22 @@ body {
   visibility: visible;
   position: relative;
   transform: translateY(0);
+  transition-delay: 0.1s;
 }
 
 h2 {
-  font-size: 2.5rem;
+  font-size: clamp(2rem, 5vw, 2.5rem);
   color: var(--accent-color);
   margin-bottom: 2rem;
   text-align: center;
   font-weight: 700;
   letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(100, 255, 218, 0.3);
+  text-shadow: 0 0 10px rgba(149, 114, 103, 0.3);
 }
 
 h3 {
-  font-size: 1.8rem;
-  color: var(--text-color);
+  font-size: clamp(1.5rem, 4vw, 1.8rem);
+  color: var(--light-accent);
   margin-bottom: 1rem;
   font-weight: 600;
 }
@@ -82,45 +94,28 @@ h3 {
 .card {
   background-color: var(--card-background);
   border-radius: 12px;
-  padding: 2.5rem;
+  padding: clamp(1.5rem, 5vw, 2.5rem);
   margin-bottom: 3rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  transition: all var(--transition-speed) ease;
-  border: 1px solid rgba(100, 255, 218, 0.1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  transition: 
+    transform var(--transition-speed) ease,
+    box-shadow var(--transition-speed) ease;
+  border: 1px solid var(--border-color);
   width: 100%;
   backdrop-filter: blur(5px);
 }
 
-.card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  border-color: var(--accent-color);
+.card:hover,
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes ripple {
-  0% {
-    transform: scale(0, 0);
-    opacity: 1;
-  }
-
-  20% {
-    transform: scale(25, 25);
-    opacity: 1;
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(40, 40);
-  }
-}
-
-/* Enhanced Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
     transform: translateY(20px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -131,36 +126,6 @@ h3 {
   animation: fadeIn 0.5s ease-out;
 }
 
-/* Improved Responsive Design */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 20px;
-  }
-
-  .main-container {
-    padding-top: 6rem;
-  }
-
-  .section {
-    top: 7rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  h2 {
-    font-size: 2rem;
-  }
-
-  h3 {
-    font-size: 1.5rem;
-  }
-
-  .card {
-    padding: 1.5rem;
-  }
-}
-
-/* Enhanced Accessibility */
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -173,15 +138,25 @@ h3 {
   border: 0;
 }
 
-/* Additional Styles for Better UX */
 ::selection {
   background-color: var(--accent-color);
   color: var(--primary-color);
 }
 
-:focus {
+:focus-visible {
   outline: 2px solid var(--accent-color);
   outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    padding-top: 6rem;
+  }
+
+  .section {
+    --section-padding: 1rem;
+    top: 7rem;
+  }
 }
 
 .loading {
@@ -191,12 +166,10 @@ h3 {
   opacity: 0.7;
 }
 
-/* Smooth Scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Breadcrumb and Back Button Styles */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -211,7 +184,7 @@ html {
 }
 
 .breadcrumb-link:hover {
-  color: var(--text-color);
+  color: var(--light-accent);
 }
 
 .breadcrumb-separator {
@@ -239,7 +212,7 @@ html {
 }
 
 .back-button:hover {
-  background-color: rgba(100, 255, 218, 0.1);
+  background-color: rgba(149, 114, 103, 0.1);
   transform: translateX(-5px);
 }
 
@@ -248,193 +221,18 @@ html {
   height: 24px;
 }
 
-/* Hover Effects and Animations */
-.card,
-.category-card,
-.profile-image,
-.navbar-link,
-.footer-link,
-.back-button {
-  transition: all 0.3s ease;
-}
-
-.card:hover,
-.category-card:hover {
-  transform: translateY(-5px) scale(1.02);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0.4);
-  }
-
-  70% {
-    box-shadow: 0 0 0 10px rgba(100, 255, 218, 0);
-  }
-
-  100% {
-    box-shadow: 0 0 0 0 rgba(100, 255, 218, 0);
-  }
-}
-
-
-/* Animated background for added visual interest */
 @keyframes gradientBG {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
 body {
-  background: linear-gradient(-45deg, #0a192f, #020c1b, #1d2d50, #3a506b);
+  background: linear-gradient(-45deg, #373A3C, #1C2026, #563D36, #957267);
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }
 
-/* Smooth transition for section changes */
-.section {
-  transition: opacity 0.5s ease, transform 0.5s ease;
-}
-
-.section.active {
-  transition-delay: 0.1s;
-}
-
-/* Enhanced card hover effect */
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(45deg, transparent, rgba(100, 255, 218, 0.1), transparent);
-  transform: translateX(-100%);
-  transition: 0.6s;
-}
-
-.card:hover::before {
-  transform: translateX(100%);
-}
-
-
-@keyframes typing {
-  from {
-    width: 0
-  }
-
-  to {
-    width: 100%
-  }
-}
-
-@keyframes blink-caret {
-
-  from,
-  to {
-    border-color: transparent
-  }
-
-  50% {
-    border-color: var(--accent-color);
-  }
-}
-
-/* Improve scrollbar aesthetics */
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--primary-color);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--accent-color);
-  border-radius: 5px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--text-color);
-}
-
-/* Add a subtle parallax effect to the background */
-.parallax-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('path-to-your-subtle-pattern.png');
-  background-attachment: fixed;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  opacity: 0.05;
-  z-index: -1;
-}
-
-
-/* Add a subtle rotation to category icons on hover */
-.category-card i {
-  transition: transform 0.3s ease;
-}
-
-.category-card:hover i {
-  transform: rotate(10deg);
-}
-
-/* Improve accessibility with focus styles */
-a:focus,
-button:focus,
-input:focus,
-textarea:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.5);
-}
-
-/* Add a subtle loader animation */
-.loader {
-  border: 4px solid var(--secondary-color);
-  border-top: 4px solid var(--accent-color);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-  margin: 20px auto;
-}
-
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
-/* Add smooth transitions to all interactive elements */
-a,
-button,
-input,
-textarea,
-.card,
-.category-card,
-.profile-image {
-  transition: all 0.3s ease;
-}
-
-/* Enhance accessibility with skip-to-content link */
 .skip-to-content {
   position: absolute;
   top: -40px;
@@ -449,44 +247,53 @@ textarea,
   top: 0;
 }
 
-/* Add a subtle scale effect to cards on hover */
-.card,
-.category-card {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.card:hover,
-.category-card:hover {
-  transform: scale(1);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Improve readability with a subtle text shadow */
-body {
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Add smooth page transitions */
-.page-transition-enter {
-  opacity: 0;
-}
-
-.page-transition-enter-active {
+.page-transition-enter { opacity: 0; }
+.page-transition-enter-active { 
   opacity: 1;
   transition: opacity 300ms ease-in;
 }
-
-.page-transition-exit {
-  opacity: 1;
-}
-
+.page-transition-exit { opacity: 1; }
 .page-transition-exit-active {
   opacity: 0;
   transition: opacity 300ms ease-in;
 }
-@media (min-width: 769px) {
-  .section {
-    padding-left: 60px;
-    padding-right: 60px;
-  }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--primary-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-color);
+  border-radius: 5px;
+}
+
+.parallax-bg {
+  position: fixed;
+  inset: 0;
+  background-image: url('path-to-your-subtle-pattern.png');
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.05;
+  z-index: -1;
+}
+
+.loader {
+  border: 4px solid var(--secondary-color);
+  border-top: 4px solid var(--accent-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
