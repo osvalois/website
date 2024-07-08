@@ -11,12 +11,13 @@ export class PostView {
         <style>
         @import url('public/styles/post-section.css');
         </style>
-            <div class="breadcrumb">
-                <a href="#" class="breadcrumb-link" data-target="categories">Categories</a>
-                <span class="breadcrumb-separator">/</span>
-                <span class="breadcrumb-current">${post.title}</span>
-            </div>
-            ${post.html}
+
+        <div class="post">             <div class="breadcrumb">
+        <a href="#" class="breadcrumb-link" data-target="categories">Categories</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">${post.title}</span>
+    </div>
+    ${post.html}</div> 
         `);
     }
 }
