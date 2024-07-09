@@ -1,25 +1,28 @@
 // state/State.js
 
-const createState = (initialState) => {
-    const listeners = new Set();
-    const state = new Proxy(initialState, {
-        set: (target, property, value) => {
-            target[property] = value;
-            listeners.forEach(listener => listener());
-            return true;
+export class State {
+    constructor(initialState = {}) {
+        this._state = initialState;
+        this._listeners = new Set();
+    }
+
+    get state() {
+        return this._state;
+    }
+
+    setState(newState) {
+        this._state = { ...this._state, ...newState };
+        this._notifyListeners();
+    }
+
+    subscribe(listener) {
+        this._listeners.add(listener);
+        return () => this._listeners.delete(listener);
+    }
+
+    _notifyListeners() {
+        for (const listener of this._listeners) {
+            listener(this._state);
         }
-    });
-
-    const subscribe = (listener) => {
-        listeners.add(listener);
-        return () => listeners.delete(listener);
-    };
-
-    return { state, subscribe };
-};
-
-export const { state, subscribe } = createState({
-    currentSection: 'profile',
-    categories: [],
-    currentPost: null,
-});
+    }
+}

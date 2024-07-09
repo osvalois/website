@@ -1,11 +1,18 @@
-export class Navbar {
+// components/Navbar.js
+
+import { Component } from '../core/Component.js';
+import globalState from '../state/globalState.js';
+
+export class Navbar extends Component {
     constructor(options) {
-        this.options = options || [];
+        super();
+        this.options = options || {};
+        this.links = this.options.links || [];
     }
 
     render() {
-        const links = this.options.map(option =>
-            `<a href="#${option.target}" class="navbar-link" data-target="${option.target}">${option.text}</a>`
+        const links = this.links.map(link =>
+            `<a href="#${link.target}" class="navbar-link" data-target="${link.target}">${link.text}</a>`
         ).join('');
 
         return `
@@ -17,5 +24,17 @@ export class Navbar {
                 </div>
             </nav>
         `;
+    }
+
+    attachEventListeners() {
+        document.querySelectorAll('.navbar-link').forEach(link => {
+            link.addEventListener('click', this.handleNavClick.bind(this));
+        });
+    }
+
+    handleNavClick(e) {
+        e.preventDefault();
+        const targetSection = e.target.getAttribute('data-target');
+        globalState.setCurrentSection(targetSection);
     }
 }

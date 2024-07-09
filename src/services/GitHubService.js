@@ -15,5 +15,19 @@ export class GitHubService {
         const files = await response.json();
         return files.filter(file => file.type === 'file' && file.name.endsWith('.md'));
     }
-    
+
+    async fetchAndDisplayPost(path) {
+        try {
+            const response = await fetch(`https://raw.githubusercontent.com/${this.username}/${this.repo}/main/${path}`);
+            if (!response.ok) throw new Error('Network response was not ok');
+            const markdown = await response.text();
+            return {
+                content: markdown,
+                title: path.split('/').pop().replace('.md', '')
+            };
+        } catch (error) {
+            console.error('Error al cargar el post:', error);
+            throw error;
+        }
+    }
 }

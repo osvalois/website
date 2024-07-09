@@ -1,23 +1,27 @@
+// Footer.js
 export class Footer {
     constructor(options) {
-        this.options = options || [];
+        this.options = options || {};
+        this.links = Array.isArray(options.links) ? options.links : [];
     }
 
     render() {
-        const links = this.options.map(option =>
-            `<a href="${option.href}" class="footer-link" target="_blank" rel="noopener noreferrer">${option.text}</a>`
-        ).join('');
+        const links = this.links.map(link =>
+            `<a href="${link.href}" target="_blank" rel="noopener noreferrer">${link.text}</a>`
+        ).join(' | ');
         return `
-            <style>
-                @import url('public/styles/footer.css');
-            </style>
             <footer class="footer">
                 <div class="container">
-                    <p>&copy; ${new Date().getFullYear()} Oscar Valois. All rights reserved.</p>
+                    <p>© ${new Date().getFullYear()} Oscar Valois. All rights reserved.</p>
                     <div class="footer-links">
                         ${links}
-                    </div>
                 </div>
-            </footer>`;
+            </footer>
+        `;
+    }
+
+    // Método vacío para evitar errores si se llama
+    attachEventListeners() {
+        // No se necesitan event listeners para el footer en este momento
     }
 }

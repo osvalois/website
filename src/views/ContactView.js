@@ -1,27 +1,47 @@
-// En ContactView, asegúrate de prevenir el comportamiento por defecto del formulario al enviarlo
-export class ContactView {
+// ContactView.js
+import { Component } from '../core/Component.js';
+import { FormComponent } from '../components/FormComponent.js';
+import { FormService } from '../services/FormService.js';
+
+export class ContactView extends Component {
+    constructor() {
+        super();
+        this.formService = new FormService();
+        this.form = new FormComponent({
+            fields: [
+                { type: 'text', name: 'name', label: 'Your Name', required: true },
+                { type: 'email', name: 'email', label: 'Your Email', required: true },
+                { type: 'textarea', name: 'message', label: 'Your Message', rows: 5, required: true }
+            ],
+            onSubmit: this.handleSubmit.bind(this)
+        });
+    }
+
+    async handleSubmit(formData) {
+        try {
+            const response = await this.formService.submitForm(formData);
+            this.showNotification('success', 'Thanks for your message! We\'ll get back to you soon.');
+            this.form.reset();
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            this.showNotification('error', 'An error occurred. Please try again later.');
+        }
+    }
+
+    showNotification(type, message) {
+        // Implementar lógica para mostrar notificaciones
+        console.log(`${type.toUpperCase()}: ${message}`);
+    }
+
     render() {
-        return Promise.resolve(`
-        <section class="contact-section">
-            <h2 class="contact-title">Get in Touch</h2>
-            <div class="card contact-card">
-                <form class="contact-form" id="contact-form">
-                    <div class="form-group">
-                        <input type="text" id="name" name="name" placeholder=" " required>
-                        <label for="name">Your Name</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="email" id="email" name="email" placeholder=" " required>
-                        <label for="email">Your Email</label>
-                    </div>
-                    <div class="form-group">
-                        <textarea id="message" name="message" placeholder=" " rows="5" required></textarea>
-                        <label for="message">Your Message</label>
-                    </div>
-                    <button type="submit">Send Message</button>
-                </form>
-            </div>
-        </section>`);
+        return `
+            <section class="contact-section">
+                <h2 class="contact-title">Get in Touch</h2>
+                <div class="card contact-card">
+                    ${this.form.render()}
+                </div>
+            </section>
+        `;
     }
 }
 
