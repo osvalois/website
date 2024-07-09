@@ -2,12 +2,16 @@
 
 import { Navbar } from "./components/Navbar.js";
 import { state, subscribe } from "./state/State.js";
-import { MainSection } from "./views/MainSection.js";
 import { ProfileView } from "./views/ProfileView.js";
 import { CategoriesView } from "./views/CategoriesView.js";
 import { ContactView } from "./views/ContactView.js";
 import { PostView } from "./views/PostView.js";
 import { Footer } from "./components/Footer.js";
+
+import { FormService } from './services/FormService.js'; // Asegúrate de la ubicación correcta del servicio
+
+const formService = new FormService();
+
 
 async function renderApp() {
     const navbar = new Navbar([
@@ -16,7 +20,6 @@ async function renderApp() {
         { target: "contact", text: "Contact" }
     ]);
 
-    const mainSection = new MainSection();
     const footer = new Footer([
         { text: 'Github', href: 'https://github.com/osvalois' },
         { text: 'Dockerhub', href: 'https://hub.docker.com/u/osvalois' },
@@ -48,18 +51,31 @@ function setupNavigation() {
     });
 }
 
+// En app.js, modifica setupContactForm para capturar el evento submit del formulario y enviar los datos usando submitForm
 function setupContactForm() {
     const form = document.getElementById('contact-form');
     if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Evitar el comportamiento por defecto de recargar la página
             const formData = new FormData(form);
-            console.log('Formulario enviado:', Object.fromEntries(formData));
-            alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
-            form.reset();
+            try {
+                const responseData = await formService.submitForm({
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    message: formData.get('message')
+                });
+                console.log('Response from server:', responseData);
+                alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
+                form.reset();
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Ocurrió un error al enviar el formulario. Por favor, inténtalo de nuevo más tarde.');
+            }
         });
     }
 }
+
+
 
 function setupPostLinks() {
     document.querySelectorAll('.post-link').forEach(link => {

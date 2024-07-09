@@ -14,8 +14,8 @@ const PORT = process.env.PORT || 3000;
 
 // Configurar limitador de tasa (Rate Limiting)
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 200, // limita a 100 solicitudes por IP por ventana de 15 minutos
+  windowMs: 15 * 60 * 1000,
+  max: 500,
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 app.use(limiter);
