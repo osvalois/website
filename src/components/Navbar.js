@@ -9,9 +9,6 @@ export class Navbar {
         ).join('');
 
         return `
-            <style>
-                @import url('public/styles/navbar.css');
-            </style>
             <nav class="navbar">
                 <div class="container navbar-container">
                     <div class="navbar-links">

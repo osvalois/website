@@ -5,9 +5,12 @@ const path = require('path');
 const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const xss = require('xss-clean');
+const formRoutes = require('./api/routes/formRoutes'); // Importar las rutas
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Configuración de middleware
 
 // Configurar limitador de tasa (Rate Limiting)
 const limiter = rateLimit({
@@ -15,6 +18,7 @@ const limiter = rateLimit({
   max: 100, // limita a 100 solicitudes por IP por ventana de 15 minutos
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
+app.use(limiter);
 
 // Seguridad con Helmet y configuración de CSP
 app.use(
@@ -48,16 +52,11 @@ app.use(xss());
 // Registro de solicitudes con Morgan
 app.use(morgan('combined'));
 
-// Aplicar limitador de tasa a todas las solicitudes
-app.use(limiter);
-
 // Servir archivos estáticos desde el directorio actual
 app.use(express.static(path.join(__dirname)));
 
-// Ruta para servir el archivo HTML principal
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+// Rutas
+app.use('/api/form', formRoutes); // Montar las rutas del formulario
 
 // Ruta de fallback para manejar todas las solicitudes y enviar index.html
 app.get('*', (req, res) => {
