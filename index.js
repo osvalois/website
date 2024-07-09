@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3000;
 // Configurar limitador de tasa (Rate Limiting)
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 100, // limita a 100 solicitudes por IP por ventana de 15 minutos
+  max: 200, // limita a 100 solicitudes por IP por ventana de 15 minutos
   message: 'Too many requests from this IP, please try again after 15 minutes',
 });
 app.use(limiter);
@@ -31,15 +31,16 @@ app.use(
         'img-src': ["'self'", 'https://avatars.githubusercontent.com', 'data:'],
         'connect-src': ["'self'", 'https://api.github.com', 'https://raw.githubusercontent.com'],
       },
+      reportOnly: false, // Puedes cambiar esto a true para ver qué se bloquea sin realmente bloquearlo
     },
-    dnsPrefetchControl: { allow: false },
-    frameguard: { action: 'deny' },
+    dnsPrefetchControl: { allow: true }, // Cambiado a true
+    frameguard: { action: 'sameorigin' }, // Cambiado a 'sameorigin'
     hidePoweredBy: true,
-    hsts: { maxAge: 63072000, includeSubDomains: true, preload: true },
+    hsts: { maxAge: 31536000, includeSubDomains: true, preload: true }, // Cambiado maxAge a 1 año
     ieNoOpen: true,
     noSniff: true,
     permittedCrossDomainPolicies: { policy: 'none' },
-    referrerPolicy: { policy: 'no-referrer' },
+    referrerPolicy: { policy: 'same-origin' }, // Cambiado a 'same-origin'
   })
 );
 
