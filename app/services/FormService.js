@@ -1,5 +1,6 @@
+// FormService.js
 export class FormService {
-    async submitForm(formData) {
+    static async submitForm(formData) {
         try {
             const response = await fetch('/api/form/submit', {
                 method: 'POST',
@@ -10,15 +11,16 @@ export class FormService {
             });
 
             if (!response.ok) {
-                const errorMessage = await response.text();
-                throw new Error(`Error ${response.status}: ${errorMessage}`);
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'An error occurred while submitting the form');
             }
 
-            const data = await response.json();
-            return data;
+            return await response.json();
         } catch (error) {
             console.error('Error submitting form:', error);
             throw error;
         }
     }
 }
+
+
