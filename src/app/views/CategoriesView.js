@@ -91,7 +91,6 @@ export class CategoriesView extends Component {
             }));
             globalState.setState({ categories: categoriesWithFiles });
         } catch (error) {
-            console.error('Error fetching categories and files:', error);
             globalState.setError('Failed to load categories. Please try again later.');
         }
     }

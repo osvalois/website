@@ -26,7 +26,6 @@ export class GitHubService {
                 title: path.split('/').pop().replace('.md', '')
             };
         } catch (error) {
-            console.error('Error al cargar el post:', error);
             throw error;
         }
     }

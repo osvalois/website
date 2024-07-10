@@ -38,20 +38,11 @@ exports.submitForm = async (req, res) => {
     });
 
   } catch (error) {
-    // Manejar errores específicos
-    if (error.code === 'ECONNREFUSED') {
-      logger.error('Email server connection refused', error);
-      return res.status(500).json({ 
-        status: 'error', 
-        message: 'Unable to connect to email server' 
-      });
-    }
-
-    // Manejar otros errores
+    // Manejar errores
     logger.error('Error in form submission:', error);
     res.status(500).json({ 
       status: 'error', 
-      message: 'An internal server error occurred' 
+      message: 'An error occurred while sending the email: ' + error.message
     });
   }
 };

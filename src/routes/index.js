@@ -1,10 +1,9 @@
+const express = require('express');
+const path = require('path');
 const formRoutes = require('../api/routes/formRoutes');
 
-module.exports = (app) => {
-  app.use('/api/form', formRoutes);
+const router = express.Router();
 
-  // Ruta de fallback para SPA
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
-  });
-};
+router.use('/form', formRoutes);
+
+module.exports = router;

@@ -1,4 +1,3 @@
-// ContactView.js
 import { Component } from '../core/Component.js';
 import { FormComponent } from '../components/FormComponent.js';
 import { MessageComponent } from '../components/MessageComponent.js';
@@ -15,22 +14,21 @@ export class ContactView extends Component {
 
     async handleSubmit(formData) {
         try {
-            console.log(formData)
-            console.log("formData")
-            this.messageComponent.showMessage('Sending your message...', 'info');
             await FormService.submitForm(formData);
-            this.messageComponent.showMessage('Thanks for your message! We\'ll get back to you soon.', 'success');
+            this.messageComponent.showMessage('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.', 'success');
+            console.log("formData")
+            console.log(formData)
             return { success: true };
         } catch (error) {
-            this.messageComponent.showMessage(error.message, 'error');
-            return { success: false };
+            this.messageComponent.showMessage(error.message || 'Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo.', 'error');
+            return { success: false, error: error.message };
         }
     }
 
     render() {
         return `
             <section class="contact-section">
-                <h2 class="contact-title">Get in Touch</h2>
+                <h2 class="contact-title">Ponte en Contacto</h2>
                 <div class="card contact-card">
                     ${this.messageComponent.render()}
                     ${this.formComponent.render()}

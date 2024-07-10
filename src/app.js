@@ -70,7 +70,6 @@ class App extends Component {
                     const html = this.convertMarkdownToHtml(post.content);
                     view = new PostView({ title: post.title, html });
                 } catch (error) {
-                    console.error('Error al cargar el post:', error);
                     view = new PostView({ title: 'Error', html: '<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>' });
                 }
             } else {
@@ -104,7 +103,6 @@ class App extends Component {
             globalState.setCurrentPost({ html, title: post.title });
             globalState.setCurrentSection('post');
         } catch (error) {
-            console.error('Error al cargar el post:', error);
             globalState.setCurrentPost({ html: '<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>', title: 'Error' });
             globalState.setCurrentSection('post');
         }

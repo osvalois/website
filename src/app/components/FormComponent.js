@@ -1,4 +1,3 @@
-// FormComponent.js
 import { Component } from '../core/Component.js';
 
 export class FormComponent extends Component {
@@ -6,7 +5,8 @@ export class FormComponent extends Component {
         super();
         this.onSubmit = onSubmit;
         this.state = {
-            isSubmitting: false
+            isSubmitting: false,
+            errors: {}
         };
         this.fields = [
             { type: 'text', name: 'name', label: 'Your Name', required: true },
@@ -18,30 +18,23 @@ export class FormComponent extends Component {
 
     renderField(field) {
         const { type, name, label, required, rows } = field;
+        const errorMessage = this.state.errors[name] ? `<span class="error-message">${this.state.errors[name]}</span>` : '';
+
         if (type === 'textarea') {
             return `
-                <div class="form-group">
+                <div class="form-group ${this.state.errors[name] ? 'has-error' : ''}">
                     <textarea id="${name}" name="${name}" placeholder=" " rows="${rows}" ${required ? 'required' : ''}></textarea>
                     <label for="${name}">${label}</label>
+                    ${errorMessage}
                 </div>
             `;
         }
         return `
-            <div class="form-group">
+            <div class="form-group ${this.state.errors[name] ? 'has-error' : ''}">
                 <input type="${type}" id="${name}" name="${name}" placeholder=" " ${required ? 'required' : ''}>
                 <label for="${name}">${label}</label>
+                ${errorMessage}
             </div>
-        `;
-    }
-
-    render() {
-        return `
-            <form class="contact-form" id="contact-form">
-                ${this.fields.map(field => this.renderField(field)).join('')}
-                <button type="submit" ${this.state.isSubmitting ? 'disabled' : ''}>
-                    ${this.state.isSubmitting ? 'Sending...' : 'Send Message'}
-                </button>
-            </form>
         `;
     }
 
@@ -54,23 +47,50 @@ export class FormComponent extends Component {
         event.preventDefault();
         if (this.state.isSubmitting) return;
 
-        this.setState({ isSubmitting: true });
+        this.setState({ isSubmitting: true, errors: {} });
 
         const formData = new FormData(event.target);
         const data = Object.fromEntries(formData.entries());
 
         try {
-            await this.onSubmit(data);
-            this.reset();
+            const result = await this.onSubmit(data);
+            if (result.success) {
+                this.reset();
+            } else if (result.error) {
+                this.setState({ errors: { general: result.error } });
+            }
         } catch (error) {
-            console.error('Error in form submission:', error);
+            this.setState({ errors: { general: error.message } });
         } finally {
             this.setState({ isSubmitting: false });
         }
     }
 
+    render() {
+        const generalError = this.state.errors.general ? `<div class="error-message">${this.state.errors.general}</div>` : '';
+        return `
+            <form class="contact-form" id="contact-form">
+                ${this.fields.map(field => this.renderField(field)).join('')}
+                ${generalError}
+                <button type="submit" ${this.state.isSubmitting ? 'disabled' : ''}>
+                    ${this.state.isSubmitting ? 'Sending...' : 'Send Message'}
+                </button>
+            </form>
+        `;
+    }
+
+    parseErrors(errorMessage) {
+        const errors = {};
+        errorMessage.split(', ').forEach(error => {
+            const [field, message] = error.split(' is ');
+            errors[field.toLowerCase()] = `${field} is ${message}`;
+        });
+        return errors;
+    }
+
     reset() {
         document.getElementById('contact-form').reset();
+        this.setState({ errors: {} });
     }
 
     setState(newState) {
