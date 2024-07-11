@@ -8,11 +8,25 @@ export class CategoriesView extends Component {
     constructor() {
         super();
         this.githubService = new GitHubService('osvalois', 'website');
+        this.isLoading = false;
     }
 
     async render() {
-        if (globalState.state.categories.length === 0) {
+        if (globalState.state.categories.length === 0 && !globalState.state.categoriesError && !this.isLoading) {
             await this.fetchAndSetCategories();
+        }
+
+        if (this.isLoading) {
+            return '<section class="categories-section"><p>Loading categories...</p></section>';
+        }
+
+        if (globalState.state.categoriesError) {
+            return `
+                <section class="categories-section">
+                    <h2 class="categories-title">Error Loading Categories</h2>
+                    <p class="error-message">${globalState.state.categoriesError}</p>
+                    <button class="retry-btn">Retry</button>
+                </section>`;
         }
 
         const categoryItems = globalState.state.categories.map((category, index) => this.renderCategory(category, index)).join('');
@@ -29,7 +43,7 @@ export class CategoriesView extends Component {
     }
 
     renderCategory(category, index) {
-        const filesList = category.files.map(file => this.renderPostItem(file)).join('');
+        const filesList = category.files ? category.files.map(file => this.renderPostItem(file)).join('') : '';
         
         return `
             <article class="category-card" data-category="${category.name.toLowerCase()}" style="--animation-order: ${index};">
@@ -44,7 +58,7 @@ export class CategoriesView extends Component {
                         ${filesList || '<li class="no-posts">No posts found in this category.</li>'}
                     </ul>
                     <footer class="category-footer">
-                        <span class="post-count">${category.files.length} posts</span>
+                        <span class="post-count">${category.files ? category.files.length : 0} posts</span>
                         <button class="view-all-btn">View All</button>
                     </footer>
                 </div>
@@ -83,15 +97,40 @@ export class CategoriesView extends Component {
     }
 
     async fetchAndSetCategories() {
+        if (this.isLoading) return;
+
+        this.isLoading = true;
+        globalState.setState({ categoriesError: null });
+
         try {
             const categories = await this.githubService.fetchCategories();
             const categoriesWithFiles = await Promise.all(categories.map(async category => {
-                const files = await this.githubService.fetchFilesInCategory(category.path);
-                return { ...category, files };
+                try {
+                    const files = await this.githubService.fetchFilesInCategory(category.path);
+                    return { ...category, files };
+                } catch (error) {
+                    console.error(`Error fetching files for category ${category.name}:`, error);
+                    return { ...category, files: [], error: `Failed to load files for ${category.name}` };
+                }
             }));
+
             globalState.setState({ categories: categoriesWithFiles });
         } catch (error) {
-            globalState.setError('Failed to load categories. Please try again later.');
+            console.error('Error fetching categories:', error);
+            const errorMessage = this.getErrorMessage(error);
+            globalState.setState({ categoriesError: errorMessage });
+        } finally {
+            this.isLoading = false;
+        }
+    }
+
+    getErrorMessage(error) {
+        if (error.response) {
+            return `Server error: ${error.response.status} - ${error.response.statusText}`;
+        } else if (error.request) {
+            return "Network error: Unable to reach the server. Please check your internet connection.";
+        } else {
+            return `Error loading categories: ${error.message}`;
         }
     }
 
@@ -128,6 +167,11 @@ export class CategoriesView extends Component {
         document.querySelectorAll('.view-all-btn').forEach(btn => {
             btn.addEventListener('click', this.handleViewAllClick.bind(this));
         });
+
+        const retryBtn = document.querySelector('.retry-btn');
+        if (retryBtn) {
+            retryBtn.addEventListener('click', this.handleRetry.bind(this));
+        }
     }
 
     handleFilterClick(e) {
@@ -144,7 +188,7 @@ export class CategoriesView extends Component {
         });
     }
 
-    handlePostClick = (e) => {
+    handlePostClick(e) {
         e.preventDefault();
         const path = e.target.closest('.post-link').dataset.path;
         const title = e.target.closest('.post-link').querySelector('.post-title').textContent;
@@ -154,7 +198,11 @@ export class CategoriesView extends Component {
 
     handleViewAllClick(e) {
         const category = e.target.closest('.category-card').dataset.category;
-        // Implementar la lógica para ver todos los posts de una categoría
         console.log(`View all posts in ${category}`);
+        // Implement logic to view all posts in a category
+    }
+
+    handleRetry() {
+        this.fetchAndSetCategories();
     }
 }

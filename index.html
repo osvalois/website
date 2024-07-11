@@ -1,52 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oscar Valois - Professional Software Developer Portfolio</title>
-    <meta name="description" content="Explore Oscar Valois' professional portfolio showcasing expertise in software development, innovative projects, and technical skills.">
-    <meta name="keywords" content="Oscar Valois, software developer, portfolio, web development, programming">
-    <meta name="author" content="Oscar Valois">
-    
-    <link rel="canonical" href="http://osvalois.tech/">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="http://osvalois.tech/">
-    <meta property="og:title" content="Oscar Valois - Professional Software Developer Portfolio">
-    <meta property="og:description" content="Explore Oscar Valois' professional portfolio showcasing expertise in software development, innovative projects, and technical skills.">
-    <meta property="og:image" content="http://osvalois.tech/public/images/og-image.jpg">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oscar Valois - Professional Software Developer Portfolio</title>
+  <meta name="description"
+    content="Explore Oscar Valois' professional portfolio showcasing expertise in software development, innovative projects, and technical skills.">
+  <meta name="keywords" content="Oscar Valois, software developer, portfolio, web development, programming">
+  <meta name="author" content="Oscar Valois">
 
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image">
-    <meta property="twitter:url" content="http://osvalois.tech/">
-    <meta property="twitter:title" content="Oscar Valois - Professional Software Developer Portfolio">
-    <meta property="twitter:description" content="Explore Oscar Valois' professional portfolio showcasing expertise in software development, innovative projects, and technical skills.">
-    <meta property="twitter:image" content="http://osvalois.tech/public/images/twitter-image.jpg">
+  <link rel="canonical" href="https://osvalois.tech/">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="/public/styles/dart.theme.css">
-    <link rel="stylesheet" href="/public/styles/categories-section.css">
-    <link rel="stylesheet" href="/public/styles/profile-section.css">
-    <link rel="stylesheet" href="/public/styles/contact-section.css">
-    <link rel="stylesheet" href="/public/styles/navbar.css">
-    <link rel="stylesheet" href="/public/styles/footer.css">
-    <link rel="stylesheet" href="/public/styles/post-section.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js" defer></script>
-    
-    <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/public/apple-touch-icon.png">
-    
-    <script type="application/ld+json">
+  <!-- Seguridad -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  
+  <!-- CSP inline -->
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'nonce-<%= nonce %>' https://cdn.jsdelivr.net; style-src 'self' 'nonce-<%= nonce %>' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self';">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://osvalois.tech/">
+  <meta property="og:title" content="Oscar Valois - Professional Software Developer Portfolio">
+  <meta property="og:description"
+    content="Explore Oscar Valois' professional portfolio showcasing expertise in software development, innovative projects, and technical skills.">
+  <meta property="og:image" content="https://osvalois.tech/public/images/og-image.jpg">
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://osvalois.tech/">
+  <meta property="twitter:title" content="Oscar Valois - Professional Software Developer Portfolio">
+  <meta property="twitter:description"
+    content="Explore Oscar Valois' professional portfolio showcasing expertise in software development, innovative projects, and technical skills.">
+  <meta property="twitter:image" content="https://osvalois.tech/public/images/twitter-image.jpg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" nonce="<%= nonce %>">
+
+  <link rel="stylesheet" href="/public/styles/dart.theme.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/categories-section.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/profile-section.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/contact-section.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/navbar.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/footer.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/post-section.css" nonce="<%= nonce %>">
+
+  <script src="public/plugins/marked.min.js" defer nonce="<%= nonce %>"></script>
+  <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="/public/apple-touch-icon.png">
+
+  <script type="application/ld+json" nonce="<%= nonce %>">
     {
       "@context": "https://schema.org",
       "@type": "Person",
       "name": "Oscar Valois",
-      "url": "http://osvalois.tech",
+      "url": "https://osvalois.tech",
       "sameAs": [
         "https://github.com/osvalois",
         "https://hub.docker.com/u/osvalois",
@@ -58,10 +70,13 @@
         "name": "Self-employed"
       }
     }
-    </script>
+  </script>
 </head>
+
 <body>
-    <div id="app"></div>
-    <script type="module" src="/src/app.js"></script>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="app"></div>
+  <script type="module" src="/src/app.js" nonce="<%= nonce %>"></script>
 </body>
+
 </html>

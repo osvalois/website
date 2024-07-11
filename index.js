@@ -1,3 +1,5 @@
+// index.js
+
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,10 +9,8 @@ import errorHandlers from './src/utils/errorHandlers.js';
 import loggerPromise from './src/utils/logger.js';
 import routes from './src/server/routes/routes.js';
 
-// ... (código existente)
-// En una función asíncrona
 const logger = await loggerPromise;
- 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -20,41 +20,55 @@ const PORT = process.env.PORT || 3000;
 logger.info('Initializing server...');
 
 try {
-  // Middleware para establecer el tipo MIME correcto para archivos JavaScript
-  app.use((req, res, next) => {
-    if (req.url.endsWith('.js')) {
-      res.type('application/javascript');
-    }
-    next();
-  });
-
-  logger.info('Applying configurations...');
   // Aplicar configuraciones
   config(app);
 
-  logger.info('Applying middlewares...');
   // Aplicar middlewares
   middlewares(app);
+
+  // Rutas API
   app.use('/api', routes);
-  // Servir archivos estáticos
-  app.use('/public', express.static(path.join(__dirname, 'public')));
-  app.use('/posts', express.static(path.join(__dirname, 'posts')));
+
+  // Servir archivos estáticos con configuraciones de seguridad
+  app.use('/public', express.static(path.join(__dirname, 'public'), {
+    setHeaders: (res, path) => {
+      res.setHeader('Cache-Control', 'public, max-age=31536000');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+    }
+  }));
   app.use('/src', express.static(path.join(__dirname, 'src'), {
     setHeaders: (res, path) => {
       if (path.endsWith('.js')) {
         res.setHeader('Content-Type', 'application/javascript');
       }
-    }
+    },
+    maxAge: '1d'
   }));
 
-  // Todas las demás solicitudes GET no manejadas deben devolver nuestra app
-  app.get('*', (req, res) => {
+  // Ruta para manejar solicitudes GET a la página principal
+  app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
   });
 
-  logger.info('Applying error handlers...');
+  // Manejar rutas no mapeadas
+  app.use((req, res, next) => {
+    const error = new Error('Not Found');
+    error.status = 404;
+    next(error);
+  });
+
   // Manejar errores
-  errorHandlers(app);
+  app.use((err, req, res, next) => {
+    logger.error(`Error ${err.status || 500}: ${err.message}`);
+    
+    res.status(err.status || 500);
+    res.json({
+      error: {
+        message: err.message,
+        status: err.status || 500
+      }
+    });
+  });
 
   const server = app.listen(PORT, () => {
     logger.info(`Server is running on http://localhost:${PORT}`);

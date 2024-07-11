@@ -1,5 +1,4 @@
 // state/State.js
-
 export class State {
     constructor(initialState = {}) {
         this._state = initialState;

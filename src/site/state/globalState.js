@@ -1,5 +1,5 @@
-// state/globalState.js
 
+// state/globalState.js
 import { State } from './State.js';
 
 class GlobalState extends State {
@@ -10,7 +10,8 @@ class GlobalState extends State {
             user: null,
             isLoading: false,
             error: null,
-            categories: []
+            categories: [],
+            categoriesError: null
         });
     }
 
@@ -19,9 +20,8 @@ class GlobalState extends State {
     }
 
     setCategories(categories) {
-        this.setState({ categories });
+        this.setState({ categories, categoriesError: null });
     }
-
 
     setCurrentPost(post) {
         this.setState({ currentPost: post });
@@ -39,19 +39,25 @@ class GlobalState extends State {
         this.setState({ error });
     }
 
+    setCategoriesError(error) {
+        this.setState({ categoriesError: error });
+    }
+
     resetState() {
         this.setState({
             currentSection: 'profile',
             currentPost: null,
             user: null,
             isLoading: false,
-            error: null
+            error: null,
+            categories: [],
+            categoriesError: null
         });
     }
 }
 
-// Creamos una instancia única del estado global
 const globalState = new GlobalState();
-
-// Exportamos la instancia como exportación por defecto
 export default globalState;
+
+
+
