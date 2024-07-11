@@ -1,3 +1,5 @@
+// App.js
+
 import { Component } from './site/core/Component.js';
 import { Router } from './site/core/Router.js';
 import globalState from './site/state/globalState.js';
@@ -65,16 +67,15 @@ class App extends Component {
         if (section === 'post') {
             const currentPost = globalState.state.currentPost;
             if (currentPost && currentPost.path) {
-                try {
-                    const post = await this.githubService.fetchAndDisplayPost(currentPost.path);
-                    const html = this.convertMarkdownToHtml(post.content);
-                    view = new PostView({ title: post.title, html });
-                } catch (error) {
-                    view = new PostView({ title: 'Error', html: '<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>' });
-                }
+                view = new PostView(currentPost);
             } else {
                 view = new PostView({ title: 'Post no encontrado', html: '<p>Contenido no disponible.</p>' });
             }
+        } else if (section === 'categories') {
+            if (globalState.state.categories.length === 0 && !globalState.state.categoriesError) {
+                await globalState.fetchCategories();
+            }
+            view = new CategoriesView();
         } else {
             view = this.router.getView(section);
         }
@@ -96,18 +97,6 @@ class App extends Component {
         globalState.setCurrentSection(hash || 'profile');
     }
 
-    async fetchAndDisplayPost(path) {
-        try {
-            const post = await this.githubService.fetchAndDisplayPost(path);
-            const html = this.convertMarkdownToHtml(post.content);
-            globalState.setCurrentPost({ html, title: post.title });
-            globalState.setCurrentSection('post');
-        } catch (error) {
-            globalState.setCurrentPost({ html: '<p>Error al cargar el post. Por favor, intenta nuevamente más tarde.</p>', title: 'Error' });
-            globalState.setCurrentSection('post');
-        }
-    }
-
     convertMarkdownToHtml(markdown) {
         return marked.parse(markdown);
     }
@@ -118,7 +107,7 @@ async function initApp() {
     const appElement = document.getElementById('app');
     appElement.innerHTML = await app.render();
     app.attachEventListeners();
-    app.handleRouteChange(); // Manejar la ruta inicial
+    app.handleRouteChange(); // Handle initial route
 }
 
 document.addEventListener('DOMContentLoaded', initApp);

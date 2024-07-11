@@ -2,21 +2,14 @@
 
 import { Component } from '../core/Component.js';
 import globalState from '../state/globalState.js';
-import { GitHubService } from '../services/GitHubService.js';
 
 export class CategoriesView extends Component {
     constructor() {
         super();
-        this.githubService = new GitHubService('osvalois', 'website');
-        this.isLoading = false;
     }
 
     async render() {
-        if (globalState.state.categories.length === 0 && !globalState.state.categoriesError && !this.isLoading) {
-            await this.fetchAndSetCategories();
-        }
-
-        if (this.isLoading) {
+        if (globalState.state.isLoading) {
             return '<section class="categories-section"><p>Loading categories...</p></section>';
         }
 
@@ -27,6 +20,11 @@ export class CategoriesView extends Component {
                     <p class="error-message">${globalState.state.categoriesError}</p>
                     <button class="retry-btn">Retry</button>
                 </section>`;
+        }
+
+        if (globalState.state.categories.length === 0) {
+            await globalState.fetchCategories();
+            return this.render(); // Re-render after fetching
         }
 
         const categoryItems = globalState.state.categories.map((category, index) => this.renderCategory(category, index)).join('');
@@ -96,44 +94,6 @@ export class CategoriesView extends Component {
             </div>`;
     }
 
-    async fetchAndSetCategories() {
-        if (this.isLoading) return;
-
-        this.isLoading = true;
-        globalState.setState({ categoriesError: null });
-
-        try {
-            const categories = await this.githubService.fetchCategories();
-            const categoriesWithFiles = await Promise.all(categories.map(async category => {
-                try {
-                    const files = await this.githubService.fetchFilesInCategory(category.path);
-                    return { ...category, files };
-                } catch (error) {
-                    console.error(`Error fetching files for category ${category.name}:`, error);
-                    return { ...category, files: [], error: `Failed to load files for ${category.name}` };
-                }
-            }));
-
-            globalState.setState({ categories: categoriesWithFiles });
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-            const errorMessage = this.getErrorMessage(error);
-            globalState.setState({ categoriesError: errorMessage });
-        } finally {
-            this.isLoading = false;
-        }
-    }
-
-    getErrorMessage(error) {
-        if (error.response) {
-            return `Server error: ${error.response.status} - ${error.response.statusText}`;
-        } else if (error.request) {
-            return "Network error: Unable to reach the server. Please check your internet connection.";
-        } else {
-            return `Error loading categories: ${error.message}`;
-        }
-    }
-
     getCategoryIcon(categoryName) {
         const iconMap = {
             'Infrastructure': 'fas fa-server',
@@ -170,7 +130,7 @@ export class CategoriesView extends Component {
 
         const retryBtn = document.querySelector('.retry-btn');
         if (retryBtn) {
-            retryBtn.addEventListener('click', this.handleRetry.bind(this));
+            retryBtn.addEventListener('click', () => globalState.fetchCategories());
         }
     }
 
@@ -200,9 +160,5 @@ export class CategoriesView extends Component {
         const category = e.target.closest('.category-card').dataset.category;
         console.log(`View all posts in ${category}`);
         // Implement logic to view all posts in a category
-    }
-
-    handleRetry() {
-        this.fetchAndSetCategories();
     }
 }

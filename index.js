@@ -16,6 +16,7 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
 
 logger.info('Initializing server...');
 
@@ -29,24 +30,35 @@ try {
   // Rutas API
   app.use('/api', routes);
 
+  // Función para configurar encabezados de caché
+  const setCacheHeaders = (res, maxAge) => {
+    if (isProduction) {
+      res.setHeader('Cache-Control', `public, max-age=${maxAge}`);
+    } else {
+      res.setHeader('Cache-Control', 'no-store, must-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+  };
+
   // Servir archivos estáticos con configuraciones de seguridad
   app.use('/public', express.static(path.join(__dirname, 'public'), {
-    setHeaders: (res, path) => {
-      res.setHeader('Cache-Control', 'public, max-age=31536000');
-      res.setHeader('X-Content-Type-Options', 'nosniff');
-    }
+    setHeaders: (res, path) => setCacheHeaders(res, 31536000) // 1 año para producción
   }));
+
   app.use('/src', express.static(path.join(__dirname, 'src'), {
     setHeaders: (res, path) => {
       if (path.endsWith('.js')) {
         res.setHeader('Content-Type', 'application/javascript');
       }
-    },
-    maxAge: '1d'
+      setCacheHeaders(res, 86400); // 1 día para producción
+    }
   }));
 
   // Ruta para manejar solicitudes GET a la página principal
   app.get('/', (req, res) => {
+    setCacheHeaders(res, 3600); // 1 hora para producción
     res.sendFile(path.join(__dirname, 'index.html'));
   });
 
