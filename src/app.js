@@ -1,13 +1,13 @@
-import { Component } from './app/core/Component.js';
-import { Router } from './app/core/Router.js';
-import globalState from './app/state/globalState.js';
-import { Navbar } from "./app/components/Navbar.js";
-import { Footer } from "./app/components/Footer.js";
-import { ProfileView } from "./app/views/ProfileView.js";
-import { CategoriesView } from "./app/views/CategoriesView.js";
-import { ContactView } from "./app/views/ContactView.js";
-import { PostView } from "./app/views/PostView.js";
-import { GitHubService } from './app/services/GitHubService.js';
+import { Component } from './site/core/Component.js';
+import { Router } from './site/core/Router.js';
+import globalState from './site/state/globalState.js';
+import { Navbar } from "./site/components/Navbar.js";
+import { Footer } from "./site/components/Footer.js";
+import { ProfileView } from "./site/views/ProfileView.js";
+import { CategoriesView } from "./site/views/CategoriesView.js";
+import { ContactView } from "./site/views/ContactView.js";
+import { PostView } from "./site/views/PostView.js";
+import { GitHubService } from './site/services/GitHubService.js';
 
 class App extends Component {
     constructor() {

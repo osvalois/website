@@ -16,8 +16,6 @@ export class ContactView extends Component {
         try {
             await FormService.submitForm(formData);
             this.messageComponent.showMessage('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.', 'success');
-            console.log("formData")
-            console.log(formData)
             return { success: true };
         } catch (error) {
             this.messageComponent.showMessage(error.message || 'Hubo un error al enviar tu mensaje. Por favor, inténtalo de nuevo.', 'error');
@@ -28,7 +26,7 @@ export class ContactView extends Component {
     render() {
         return `
             <section class="contact-section">
-                <h2 class="contact-title">Ponte en Contacto</h2>
+            <h2 class="contact-title">Get in Touch</h2>
                 <div class="card contact-card">
                     ${this.messageComponent.render()}
                     ${this.formComponent.render()}

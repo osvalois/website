@@ -1,6 +1,9 @@
-require('dotenv').config();
+// src/config/emailConfig.js
+import dotenv from 'dotenv';
 
-module.exports = {
+dotenv.config();
+
+export const emailConfig = {
   host: process.env.EMAIL_HOST,
   port: process.env.EMAIL_PORT,
   secure: true,

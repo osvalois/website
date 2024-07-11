@@ -1,7 +1,7 @@
 export class FormService {
     static async submitForm(formData) {
         try {
-            const response = await fetch('/api/form/submit', {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,6 +1,6 @@
 // middlewares/rateLimiter.js
 
-const rateLimit = require('express-rate-limit');
+import rateLimit from 'express-rate-limit';
 
 /**
  * Crea un middleware de limitación de tasa.
@@ -17,12 +17,18 @@ const rateLimiter = ({ windowMs, max }) => {
       status: 'error',
       message: 'Too many requests, please try again later.'
     },
-    standardHeaders: true, // Devuelve los headers estándar de limitación de tasa `RateLimit-*`
-    legacyHeaders: false, // Deshabilita los headers `X-RateLimit-*`
+    standardHeaders: true,
+    legacyHeaders: false,
     handler: (req, res, next, options) => {
       res.status(options.statusCode).json(options.message);
-    }
+    },
+    // Añadir validación de IP
+    keyGenerator: (req) => {
+      return req.ip;
+    },
+    // Añadir almacenamiento en memoria
+    store: new rateLimit.MemoryStore(),
   });
 };
 
-module.exports = rateLimiter;
+export default rateLimiter;
