@@ -13,11 +13,11 @@ export class CategoriesView extends Component {
             return '<section class="categories-section"><p>Loading categories...</p></section>';
         }
 
-        if (globalState.state.categoriesError) {
+        if (globalState.state.error) {
             return `
                 <section class="categories-section">
                     <h2 class="categories-title">Error Loading Categories</h2>
-                    <p class="error-message">${globalState.state.categoriesError}</p>
+                    <p class="error-message">${globalState.state.error}</p>
                     <button class="retry-btn">Retry</button>
                 </section>`;
         }
@@ -41,7 +41,7 @@ export class CategoriesView extends Component {
     }
 
     renderCategory(category, index) {
-        const filesList = category.files ? category.files.map(file => this.renderPostItem(file)).join('') : '';
+        const filesList = category.files ? category.files.map(file => this.renderPostItem(file, category.path)).join('') : '';
         
         return `
             <article class="category-card" data-category="${category.name.toLowerCase()}" style="--animation-order: ${index};">
@@ -57,16 +57,15 @@ export class CategoriesView extends Component {
                     </ul>
                     <footer class="category-footer">
                         <span class="post-count">${category.files ? category.files.length : 0} posts</span>
-                        <button class="view-all-btn">View All</button>
                     </footer>
                 </div>
             </article>`;
     }
 
-    renderPostItem(file) {
+    renderPostItem(file, categoryPath) {
         return `
             <li class="post-item">
-                <a href="#" class="post-link" data-path="${file.path}">
+                <a href="#" class="post-link" data-path="${categoryPath}/${file.name}">
                     <span class="post-title">${file.name.replace('.md', '')}</span>
                     <span class="post-meta">
                         <time datetime="${file.lastModified}">${this.formatDate(file.lastModified)}</time>
@@ -124,10 +123,6 @@ export class CategoriesView extends Component {
             link.addEventListener('click', this.handlePostClick.bind(this));
         });
 
-        document.querySelectorAll('.view-all-btn').forEach(btn => {
-            btn.addEventListener('click', this.handleViewAllClick.bind(this));
-        });
-
         const retryBtn = document.querySelector('.retry-btn');
         if (retryBtn) {
             retryBtn.addEventListener('click', () => globalState.fetchCategories());
@@ -151,14 +146,6 @@ export class CategoriesView extends Component {
     handlePostClick(e) {
         e.preventDefault();
         const path = e.target.closest('.post-link').dataset.path;
-        const title = e.target.closest('.post-link').querySelector('.post-title').textContent;
-        globalState.setCurrentPost({ path, title });
-        globalState.setCurrentSection('post');
-    }
-
-    handleViewAllClick(e) {
-        const category = e.target.closest('.category-card').dataset.category;
-        console.log(`View all posts in ${category}`);
-        // Implement logic to view all posts in a category
+        globalState.loadPost(path);
     }
 }

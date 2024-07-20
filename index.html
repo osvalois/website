@@ -19,7 +19,7 @@
   
   <!-- CSP inline -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'nonce-<%= nonce %>' https://cdn.jsdelivr.net; style-src 'self' 'nonce-<%= nonce %>' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self';">
+    content="default-src 'self'; script-src 'self' 'nonce-<%= nonce %>' https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'nonce-<%= nonce %>' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; object-src 'none'; frame-src 'none'; base-uri 'self'; form-action 'self';">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
@@ -39,21 +39,21 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" nonce="<%= nonce %>">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="/public/styles/dart.theme.css" nonce="<%= nonce %>">
-  <link rel="stylesheet" href="/public/styles/categories-section.css" nonce="<%= nonce %>">
-  <link rel="stylesheet" href="/public/styles/profile-section.css" nonce="<%= nonce %>">
-  <link rel="stylesheet" href="/public/styles/contact-section.css" nonce="<%= nonce %>">
-  <link rel="stylesheet" href="/public/styles/navbar.css" nonce="<%= nonce %>">
-  <link rel="stylesheet" href="/public/styles/footer.css" nonce="<%= nonce %>">
-  <link rel="stylesheet" href="/public/styles/post-section.css" nonce="<%= nonce %>">
+  <link rel="stylesheet" href="/public/styles/dart.theme.css">
+  <link rel="stylesheet" href="/public/styles/categories-section.css">
+  <link rel="stylesheet" href="/public/styles/profile-section.css">
+  <link rel="stylesheet" href="/public/styles/contact-section.css">
+  <link rel="stylesheet" href="/public/styles/navbar.css">
+  <link rel="stylesheet" href="/public/styles/footer.css">
+  <link rel="stylesheet" href="/public/styles/post-section.css">
 
-  <script src="public/plugins/marked.min.js" defer nonce="<%= nonce %>"></script>
+  <script src="https://unpkg.com/marked@4.0.0/lib/marked.esm.js" type="module"></script>
   <link rel="icon" href="/public/favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="/public/apple-touch-icon.png">
 
-  <script type="application/ld+json" nonce="<%= nonce %>">
+  <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Person",
@@ -76,7 +76,7 @@
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="app"></div>
-  <script type="module" src="/src/app.js" nonce="<%= nonce %>"></script>
+  <script type="module" src="/src/app.js"></script>
 </body>
 
 </html>

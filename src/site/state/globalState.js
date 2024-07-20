@@ -1,6 +1,8 @@
 // state/globalState.js
+
 import { State } from './State.js';
 import { GitHubService } from '../services/GitHubService.js';
+import { marked } from 'https://unpkg.com/marked@4.0.0/lib/marked.esm.js';
 
 class GlobalState extends State {
     constructor() {
@@ -13,7 +15,7 @@ class GlobalState extends State {
             categories: [],
             categoriesError: null
         });
-        this.githubService = new GitHubService('osvalois', 'website');
+        this.githubService = new GitHubService('osvalois', 'website-posts');
     }
 
     setCurrentSection(section) {
@@ -22,10 +24,6 @@ class GlobalState extends State {
 
     setCategories(categories) {
         this.setState({ categories, categoriesError: null });
-    }
-
-    setCurrentPost(post) {
-        this.setState({ currentPost: post });
     }
 
     setUser(user) {
@@ -84,14 +82,38 @@ class GlobalState extends State {
         }
     }
 
+    async loadPost(path) {
+        this.setState({ isLoading: true, currentSection: 'post', error: null });
+        try {
+            const content = await this.githubService.fetchPostContent(path);
+            const html = marked(content);
+            const title = path.split('/').pop().replace('.md', '');
+            this.setState({ 
+                currentPost: { title, html },
+                isLoading: false
+            });
+        } catch (error) {
+            console.error('Error loading post:', error);
+            this.setState({ 
+                currentPost: null,
+                error: this.getErrorMessage(error),
+                isLoading: false
+            });
+        }
+    }
+
     getErrorMessage(error) {
         if (error.response) {
             return `Server error: ${error.response.status} - ${error.response.statusText}`;
         } else if (error.request) {
             return "Network error: Unable to reach the server. Please check your internet connection.";
         } else {
-            return `Error loading categories: ${error.message}`;
+            return `Error: ${error.message}`;
         }
+    }
+
+    convertMarkdownToHtml(markdown) {
+        return marked(markdown);
     }
 }
 

@@ -1,32 +1,30 @@
+// services/GitHubService.js
+
 export class GitHubService {
     constructor(username, repo) {
         this.username = username;
         this.repo = repo;
+        this.baseUrl = `https://api.github.com/repos/${username}/${repo}`;
+        this.rawContentUrl = `https://raw.githubusercontent.com/${username}/${repo}/main`;
     }
 
     async fetchCategories() {
-        const response = await fetch(`https://api.github.com/repos/${this.username}/${this.repo}/contents/posts`);
-        const categories = await response.json();
-        return categories.filter(item => item.type === 'dir');
+        const response = await fetch(`${this.baseUrl}/contents`);
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        const contents = await response.json();
+        return contents.filter(item => item.type === 'dir');
     }
 
     async fetchFilesInCategory(categoryPath) {
-        const response = await fetch(`https://api.github.com/repos/${this.username}/${this.repo}/contents/${categoryPath}`);
+        const response = await fetch(`${this.baseUrl}/contents/${categoryPath}`);
+        if (!response.ok) throw new Error(`Failed to fetch files in category: ${categoryPath}`);
         const files = await response.json();
         return files.filter(file => file.type === 'file' && file.name.endsWith('.md'));
     }
 
-    async fetchAndDisplayPost(path) {
-        try {
-            const response = await fetch(`https://raw.githubusercontent.com/${this.username}/${this.repo}/main/${path}`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const markdown = await response.text();
-            return {
-                content: markdown,
-                title: path.split('/').pop().replace('.md', '')
-            };
-        } catch (error) {
-            throw error;
-        }
+    async fetchPostContent(path) {
+        const response = await fetch(`${this.rawContentUrl}/${path}`);
+        if (!response.ok) throw new Error(`Failed to fetch post content: ${path}`);
+        return await response.text();
     }
 }
