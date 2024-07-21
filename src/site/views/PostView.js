@@ -5,46 +5,87 @@ import globalState from '../state/globalState.js';
 
 export class PostView extends Component {
     render() {
-        if (globalState.state.isLoading) {
-            return '<div class="post-section"><p>Loading post...</p></div>';
-        }
-
-        if (globalState.state.error) {
-            return `
-                <div class="post-section">
-                    <h2>Error Loading Post</h2>
-                    <p class="error-message">${globalState.state.error}</p>
-                    <button class="retry-btn">Retry</button>
-                </div>`;
-        }
-
-        const { currentPost } = globalState.state;
-        if (!currentPost) {
-            return '<div class="post-section"><p>Post not found.</p></div>';
-        }
-
-        const { title, html } = currentPost;
+        const { isLoading, error, currentPost } = globalState.state;
 
         return `
         <style>
         @import url('public/styles/post-section.css');
         </style>
 
-        <div class="post-section">             
-            <div class="breadcrumb">
-                <a href="#" class="breadcrumb-link" data-target="categories">Categories</a>
-                <span class="breadcrumb-separator">/</span>
-                <span class="breadcrumb-current">${title}</span>
+        <div class="post-section ${isLoading ? 'loading' : ''}">
+            ${this.renderBreadcrumb(currentPost?.title)}
+            ${this.renderContent(isLoading, error, currentPost)}
+        </div>
+        `;
+    }
+
+    renderBreadcrumb(title) {
+        return `
+        <div class="breadcrumb">
+            <a href="#" class="breadcrumb-link" data-target="categories">Categories</a>
+            <span class="breadcrumb-separator">/</span>
+            <span class="breadcrumb-current">${title || 'Loading...'}</span>
+        </div>
+        `;
+    }
+
+    renderContent(isLoading, error, currentPost) {
+        if (isLoading) {
+            return this.renderShimmer();
+        }
+
+        if (error) {
+            return this.renderError(error);
+        }
+
+        if (!currentPost) {
+            return '<p class="not-found">Post not found.</p>';
+        }
+
+        return this.renderPost(currentPost);
+    }
+
+    renderShimmer() {
+        return `
+        <div class="shimmer-wrapper">
+            <div class="shimmer-title"></div>
+            <div class="shimmer-content">
+                ${Array(4).fill('<div class="shimmer-line"></div>').join('')}
             </div>
-            <article class="post-content">
-                <h1 class="post-title">${title}</h1>
-                ${html}
-            </article>
-        </div> 
+        </div>
+        `;
+    }
+
+    renderError(error) {
+        return `
+        <div class="error-container">
+            <h2 class="error-title">Error Loading Post</h2>
+            <p class="error-message">${error}</p>
+            <button class="retry-btn">Retry</button>
+        </div>
+        `;
+    }
+
+    renderPost(post) {
+        const { title, html, date } = post;
+        return `
+        <article class="post-content">
+            <h1 class="post-title">${title}</h1>
+            <div class="post-meta">
+                <span class="post-author">By Oscar Valois</span>
+                <span class="post-date">${new Date(date).toLocaleDateString()}</span>
+            </div>
+            <div class="post-body">${html}</div>
+        </article>
         `;
     }
 
     attachEventListeners() {
+        this.attachBreadcrumbListener();
+        this.attachRetryButtonListener();
+    }
+
+    attachBreadcrumbListener() {
         const breadcrumbLink = document.querySelector('.breadcrumb-link');
         if (breadcrumbLink) {
             breadcrumbLink.addEventListener('click', (e) => {
@@ -52,7 +93,9 @@ export class PostView extends Component {
                 globalState.setCurrentSection('categories');
             });
         }
+    }
 
+    attachRetryButtonListener() {
         const retryBtn = document.querySelector('.retry-btn');
         if (retryBtn) {
             retryBtn.addEventListener('click', () => {

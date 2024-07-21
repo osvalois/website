@@ -1,18 +1,37 @@
 .post-section {
-    padding: 2rem 1rem;
-    min-height: 100vh;
+    padding: 2rem 1rem 6rem; /* Increased bottom padding */
+    min-height: calc(100vh - 60px); /* Adjust height to account for navbar */
     max-width: 800px;
     margin: 0 auto;
     background-color: var(--card-background);
     border-radius: var(--border-radius);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative; /* Add this */
+    z-index: 1; /* Add this */
 }
 
 .breadcrumb {
-    display: flex;
-    align-items: center;
     margin-bottom: 1.5rem;
     font-size: 0.9rem;
+    color: var(--text-color);
+}
+
+.breadcrumb ol {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.breadcrumb li {
+    display: inline;
+    font-size: 0.9rem;
+}
+
+.breadcrumb li:not(:last-child)::after {
+    content: "/";
+    margin: 0 0.5rem;
     color: var(--text-color);
 }
 
@@ -22,18 +41,9 @@
     transition: var(--transition);
 }
 
-.breadcrumb-link:hover {
+.breadcrumb-link:hover, .breadcrumb-link:focus {
     text-decoration: underline;
-}
-
-.breadcrumb-separator {
-    margin: 0 0.5rem;
-    color: var(--text-color);
-}
-
-.breadcrumb-current {
-    font-weight: 500;
-    color: var(--light-text);
+    outline: none;
 }
 
 .post-content {
@@ -41,12 +51,21 @@
 }
 
 .post-title {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
     color: var(--light-text);
     margin-bottom: 1.5rem;
     font-weight: 700;
     letter-spacing: -0.5px;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.post-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
 .post-content h2, .post-content h3, .post-content h4 {
@@ -64,10 +83,12 @@
     color: var(--accent-color);
     text-decoration: none;
     transition: var(--transition);
+    border-bottom: 1px solid transparent;
 }
 
-.post-content a:hover {
-    text-decoration: underline;
+.post-content a:hover, .post-content a:focus {
+    border-bottom-color: var(--accent-color);
+    outline: none;
 }
 
 .post-content ul, .post-content ol {
@@ -84,6 +105,7 @@
     height: auto;
     border-radius: var(--border-radius);
     margin: 1.5rem 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .post-content blockquote {
@@ -92,6 +114,8 @@
     margin: 1.5rem 0;
     font-style: italic;
     color: var(--text-color);
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
 }
 
 .post-content pre {
@@ -103,7 +127,7 @@
 }
 
 .post-content code {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: 'Fira Code', 'Courier New', Courier, monospace;
     font-size: 0.9em;
     background-color: rgba(255, 255, 255, 0.05);
     padding: 0.2em 0.4em;
@@ -115,7 +139,7 @@
     margin-bottom: 1rem;
 }
 
-.retry-btn {
+.retry-btn, .share-btn {
     background-color: var(--accent-color);
     color: var(--light-text);
     border: none;
@@ -125,17 +149,53 @@
     transition: var(--transition);
 }
 
-.retry-btn:hover {
+.retry-btn:hover, .retry-btn:focus,
+.share-btn:hover, .share-btn:focus {
     background-color: var(--secondary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.share-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.related-posts {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.related-posts h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.related-posts ul {
+    list-style: none;
+    padding: 0;
+}
+
+.related-posts li {
+    margin-bottom: 0.5rem;
+}
+
+.related-posts a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.related-posts a:hover, .related-posts a:focus {
+    text-decoration: underline;
+    outline: none;
 }
 
 @media (max-width: 768px) {
     .post-section {
         padding: 1.5rem 1rem;
-    }
-
-    .post-title {
-        font-size: 1.8rem;
     }
 }
 
@@ -144,7 +204,24 @@
         padding: 1rem;
     }
 
-    .post-title {
-        font-size: 1.6rem;
+    .share-buttons {
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .post-section, .breadcrumb-link, .post-content a,
+    .retry-btn, .share-btn {
+        transition: none;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .post-section {
+        box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);
+    }
+
+    .post-content img {
+        box-shadow: 0 4px 10px rgba(255, 255, 255, 0.1);
     }
 }
