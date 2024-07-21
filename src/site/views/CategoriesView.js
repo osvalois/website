@@ -31,9 +31,9 @@ export class CategoriesView extends Component {
 
         return `
             <section class="categories-section">
-                <h2 class="categories-title">Explore my Content</h2>
-                <p class="categories-subtitle">Discover a world of knowledge across various disciplines</p>
-                ${this.renderCategoryFilter()}
+            <h2 class="categories-title">Explore Topics</h2>
+            <p class="categories-subtitle">Browse through various categories</p>
+             ${this.renderCategoryFilter()}
                 <div class="categories-grid" role="list">
                     ${categoryItems}
                 </div>
@@ -66,7 +66,7 @@ export class CategoriesView extends Component {
         return `
             <li class="post-item">
                 <a href="#" class="post-link" data-path="${categoryPath}/${file.name}">
-                    <span class="post-title">${file.name.replace('.md', '')}</span>
+                    <span>${file.name.replace('.md', '')}</span>
                     <span class="post-meta">
                         <time datetime="${file.lastModified}">${this.formatDate(file.lastModified)}</time>
                         <span class="post-read-time">${this.estimateReadTime(file.size)} min read</span>
