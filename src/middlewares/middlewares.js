@@ -26,12 +26,12 @@ export default (app, isProduction) => {
     contentSecurityPolicy: {
       useDefaults: false,
       directives: {
-        defaultSrc: ["'self'", "https://website-9r8.pages.dev"],
+        defaultSrc: ["'self'", "https://osvalois.tech"],
         scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, "https://cdn.jsdelivr.net", "https://unpkg.com"],
         styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, "https://fonts.googleapis.com", "'unsafe-inline'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", 'data:', 'https://avatars.githubusercontent.com'],
-        connectSrc: ["'self'", 'https://api.github.com', 'https://raw.githubusercontent.com', 'https://website-9r8.pages.dev'],
+        connectSrc: ["'self'", 'https://api.github.com', 'https://raw.githubusercontent.com', 'https://osvalois.tech'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
         frameSrc: ["'none'"],
@@ -50,7 +50,7 @@ export default (app, isProduction) => {
   const corsOptions = {
     origin: function(origin, callback) {
       const allowedOrigins = isProduction 
-        ? ['https://osvalois.tech', 'https://website-9r8.pages.dev']
+        ? ['https://osvalois.tech', 'https://osvalois.tech']
         : ['http://localhost:3000', 'http://127.0.0.1:3000'];
       if (!origin || allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);

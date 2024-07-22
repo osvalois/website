@@ -19,12 +19,12 @@
   
   <!-- CSP actualizado -->
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self' https://website-9r8.pages.dev; 
+    content="default-src 'self'; 
              script-src 'self' 'nonce-<%= nonce %>' https://cdn.jsdelivr.net https://unpkg.com; 
              style-src 'self' 'nonce-<%= nonce %>' https://fonts.googleapis.com 'unsafe-inline'; 
              font-src 'self' https://fonts.gstatic.com; 
              img-src 'self' data: https:; 
-             connect-src 'self' https://api.github.com https://raw.githubusercontent.com https://website-9r8.pages.dev; 
+             connect-src 'self' https://api.github.com https://raw.githubusercontent.com; 
              object-src 'none'; 
              frame-src 'none'; 
              base-uri 'self'; 
