@@ -34,7 +34,7 @@ export default (app) => {
         styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, "https://fonts.googleapis.com", "'unsafe-inline'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
         imgSrc: ["'self'", 'data:', 'https://avatars.githubusercontent.com'],
-        connectSrc: ["'self'", 'https://api.github.com', 'https://raw.githubusercontent.com'],
+        connectSrc: ["'self'", 'https://api.github.com', 'https://raw.githubusercontent.com', 'https://website-9r8.pages.dev'],
         objectSrc: ["'none'"],
         mediaSrc: ["'self'"],
         frameSrc: ["'none'"],
@@ -65,13 +65,15 @@ export default (app) => {
   // Configurar CORS de manera más restrictiva
   app.use(cors({
     origin: process.env.NODE_ENV === 'production' 
-      ? (process.env.ALLOWED_ORIGINS?.split(',') || 'https://osvalois.tech')
-      : '*',
+    ? (process.env.ALLOWED_ORIGINS?.split(',') || ['https://osvalois.tech', 'https://website-9r8.pages.dev'])
+    : '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
     maxAge: 300
-  }));  // Compresión de respuestas
+  }));
+
+  // Compresión de respuestas
   app.use(compression());
 
   // Configurar limitador de tasa (Rate Limiting) más estricto

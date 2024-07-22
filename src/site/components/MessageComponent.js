@@ -10,39 +10,30 @@ export class MessageComponent extends Component {
         };
     }
 
-    setState(newState) {
-        this.state = { ...this.state, ...newState };
-        this.updateView();
-    }
-
     render() {
         if (!this.state.message) return '';
 
-        const iconMap = {
-            error: '❌',
-            success: '✅',
-            info: 'ℹ️'
-        };
-
         return `
-            <div class="message-container ${this.state.type}" role="alert">
-                <span class="message-icon" aria-hidden="true">${iconMap[this.state.type]}</span>
-                <p class="message-text">${this.state.message}</p>
+            <div class="message ${this.state.type}">
+                ${this.state.message}
             </div>
         `;
     }
 
-    updateView() {
-        if (this.element) {
-            this.element.innerHTML = this.render();
-        }
-    }
-
     showMessage(message, type = 'info') {
         this.setState({ message, type });
+        this.updateView();
     }
 
     clearMessage() {
         this.setState({ message: null, type: null });
+        this.updateView();
+    }
+
+    updateView() {
+        const messageContainer = document.getElementById('message-container');
+        if (messageContainer) {
+            messageContainer.innerHTML = this.render();
+        }
     }
 }

@@ -1,3 +1,4 @@
+// FormComponent.js
 import { Component } from '../core/Component.js';
 
 export class FormComponent extends Component {
@@ -40,7 +41,9 @@ export class FormComponent extends Component {
 
     attachEventListeners() {
         const form = document.getElementById('contact-form');
-        form.addEventListener('submit', this.handleSubmit.bind(this));
+        if (form) {
+            form.addEventListener('submit', this.handleSubmit.bind(this));
+        }
     }
 
     async handleSubmit(event) {
@@ -53,12 +56,7 @@ export class FormComponent extends Component {
         const data = Object.fromEntries(formData.entries());
 
         try {
-            const result = await this.onSubmit(data);
-            if (result.success) {
-                this.reset();
-            } else if (result.error) {
-                this.setState({ errors: { general: result.error } });
-            }
+            await this.onSubmit(data);
         } catch (error) {
             this.setState({ errors: { general: error.message } });
         } finally {
@@ -79,18 +77,12 @@ export class FormComponent extends Component {
         `;
     }
 
-    parseErrors(errorMessage) {
-        const errors = {};
-        errorMessage.split(', ').forEach(error => {
-            const [field, message] = error.split(' is ');
-            errors[field.toLowerCase()] = `${field} is ${message}`;
-        });
-        return errors;
-    }
-
     reset() {
-        document.getElementById('contact-form').reset();
-        this.setState({ errors: {} });
+        const form = document.getElementById('contact-form');
+        if (form) {
+            form.reset();
+            this.setState({ errors: {} });
+        }
     }
 
     setState(newState) {
@@ -99,8 +91,9 @@ export class FormComponent extends Component {
     }
 
     updateView() {
-        if (this.element) {
-            this.element.innerHTML = this.render();
+        const formContainer = document.querySelector('.contact-card');
+        if (formContainer) {
+            formContainer.innerHTML = this.render();
             this.attachEventListeners();
         }
     }
