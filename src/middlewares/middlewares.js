@@ -1,5 +1,3 @@
-// middlewares/index.js
-
 import express from 'express';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
@@ -11,14 +9,13 @@ import path from 'path';
 import helmet from 'helmet';
 import { fileURLToPath } from 'url';
 import cookieParser from 'cookie-parser';
-import csurf from 'csurf';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default (app) => {
+export default (app, isProduction) => {
   // Configurar Helmet para seguridad adicional
   app.use((req, res, next) => {
     res.locals.nonce = uuidv4();
@@ -29,7 +26,7 @@ export default (app) => {
     contentSecurityPolicy: {
       useDefaults: false,
       directives: {
-        defaultSrc: ["'self'"],
+        defaultSrc: ["'self'", "https://website-9r8.pages.dev"],
         scriptSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, "https://cdn.jsdelivr.net", "https://unpkg.com"],
         styleSrc: ["'self'", (req, res) => `'nonce-${res.locals.nonce}'`, "https://fonts.googleapis.com", "'unsafe-inline'"],
         fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -49,6 +46,31 @@ export default (app) => {
     frameguard: { action: 'deny' },
   }));
   
+  // Configurar CORS
+  const corsOptions = {
+    origin: function(origin, callback) {
+      const allowedOrigins = isProduction 
+        ? ['https://osvalois.tech', 'https://website-9r8.pages.dev']
+        : ['http://localhost:3000', 'http://127.0.0.1:3000'];
+      if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    maxAge: 300
+  };
+
+  if (!isProduction) {
+    app.use(cors());
+  } else {
+    app.use(cors(corsOptions));
+  }
+  app.options('*', cors(corsOptions)); // habilita preflight request para todas las rutas
+
   // Parsear JSON y datos de formulario con límites estrictos
   app.use(express.json({ limit: '5kb' }));
   app.use(express.urlencoded({ extended: true, limit: '5kb' }));
@@ -61,17 +83,6 @@ export default (app) => {
 
   // Evitar ataques de inyección de parámetros HTTP
   app.use(hpp());
-
-  // Configurar CORS de manera más restrictiva
-  app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-    ? (process.env.ALLOWED_ORIGINS?.split(',') || ['https://osvalois.tech', 'https://website-9r8.pages.dev'])
-    : '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    maxAge: 300
-  }));
 
   // Compresión de respuestas
   app.use(compression());

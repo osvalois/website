@@ -1,5 +1,3 @@
-// index.js
-
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -24,8 +22,8 @@ try {
   // Aplicar configuraciones
   config(app);
 
-  // Aplicar middlewares
-  middlewares(app);
+  // Aplicar middlewares (incluyendo CORS)
+  middlewares(app, isProduction);
 
   // Rutas API
   app.use('/api', routes);
