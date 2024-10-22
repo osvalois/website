@@ -168,7 +168,7 @@ export class ProfileView {
             {
                 role: "Senior Software Developer & Technical Lead",
                 company: "Kleverness",
-                duration: "2020 - 2021",
+                duration: "2019 - 2020",
                 description: "Led the backend development team for IoT smart home solutions, implementing robust architectures that enhanced product reliability and significantly improved user experience.",
                 achievements: [
                     "Developed an IoT platform that supports connected devices",
